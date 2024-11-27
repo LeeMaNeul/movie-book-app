@@ -1,23 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import Header from './components/Header';
+import BookItem from './components/BookItem';
+
+// http://www.omdbapi.com/?i=tt3896198&apikey={apiKey}
 
 function App() {
+  const active = document.querySelector('header li.link');
+  const list = document.querySelector('header li.link');
+  console.log(list);
+  // list.addEventListener('click', () => {
+  //   list.classList.add('.active');
+  // })
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App"> 
+      <Header />
+      <div className='inner'>
+        <BookItem />
+        <BookItem />
+        <BookItem />
+      </div>
     </div>
   );
 }
