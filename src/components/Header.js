@@ -1,15 +1,15 @@
 import React from 'react'
 import './Header.css';
 
-const Header = () => {
+const Header = ({ handleClick, selected }) => {
   return (
     <header>
       <div className='inner'>
-          <a href='/' className='logo'>Book & Moov</a>
+          <a href='/' className='logo'>Moovle</a>
           <ul className='links'>
-            <li className='link active'><a href="javascript:void(0)">Books</a></li>
-            <li className='link'><a href="javascript:void(0)">Movies</a></li>
-            <li className='link'><a href="javascript:void(0)">About</a></li>
+            <li className={`link ${selected === 'Books' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('Books')}>Books</a></li>
+            <li className={`link ${selected === 'Movies' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('Movies')}>Movies</a></li>
+            <li className={`link ${selected === 'About' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('About')}>About</a></li>
           </ul>
           <div className='search-wrapper'>
             <input 

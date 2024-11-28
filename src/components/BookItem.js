@@ -1,20 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 import './BookItem.css';
+import Modal from './Modal';
 
-const BookItem = () => {
+const BookItem = ({ book }) => {
+  const [modal, setModal] = useState(false);
+
+  const handleClick = moive => {
+    setModal(true);
+  }
+
   return (
     <Item>
-      <img 
-        src='https://cdn.pixabay.com/photo/2023/03/10/17/52/prayer-book-7842864_640.jpg'
-        alt='book'
-        className='bookImage'
+      <Image 
+        src={book.cover}
+        alt={book.title}
+        onClick={() => handleClick(book)}
       />
       <Info>
-        <h3>title</h3>
-        <p>author</p>
-        <p>rate</p>
+        <h3>{book.title}</h3>
+        <p>{book.author}</p>
       </Info>
+      {modal && 
+        <Modal 
+          book={book}
+        />
+      }
+      {modal && <Shadow />}
     </Item>
   )
 }
@@ -22,12 +34,36 @@ const BookItem = () => {
 export default BookItem;
 
 const Item = styled.div `
-  margin-top: 25px;
+  width: 400px;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  transition: all .1s ease;
+  background-color: #fff;
+
+  &:hover {
+    transform: scale(1.1);
+    z-index: 3;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  }
+`
+
+const Image = styled.img `
+  width: 100%;
+  height: 285px;
+  object-fit: contain;
 `
 
 const Info = styled.div `
   padding: 0 1rem;
+`
+
+const Shadow = styled.div `
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, .2);
+  z-index: 4;
 `
