@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BookItem from './BookItem'
 import axios from '../api/axios';
-import Modal from './Modal';
 
 const BookList = () => {
   const [bestsellers, setBestsellers] = useState([]);
@@ -13,23 +12,30 @@ const BookList = () => {
   
   const fetchData = useCallback(async (queryType) => { // api 데이터 가져옴
     try {
+      const cachedData = localStorage.getItem(queryType);
+      if (cachedData) return JSON.parse(cachedData);
+
       const res = await axios.get('https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemList.aspx', {
         params: {
           QueryType: queryType
         }
       });
-      console.log(res.data.item);
-      return res.data.item;
+      const data = res.data.item;
+      
+      localStorage.setItem(queryType, JSON.stringify(data));
+      return data;
     } catch (error) {
       console.log(error);
     }
   }, []);
 
-  const fetch = useCallback(async () => { // 데이터 가져와서 state값 설정
+  const fetchBooks = useCallback(async () => { // 데이터 가져와서 state값 설정
     try {
-      const bestsellersData = await fetchData('Bestseller');
-      const newBooksData = await fetchData('ItemNewAll');
-      const specialBooksData = await fetchData('ItemNewSpecial');
+      const [bestsellersData, newBooksData, specialBooksData] = await Promise.all([
+        fetchData('Bestseller'),
+        fetchData('ItemNewAll'),
+        fetchData('ItemNewSpecial')
+      ]); // 병렬로 데이터를 가져오기 위해 Promise.all 사용
 
       setBestsellers(bestsellersData);
       setNewbooks(newBooksData);
@@ -40,8 +46,8 @@ const BookList = () => {
   }, [fetchData]);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    fetchBooks();
+  }, [fetchBooks]);
 
 
   return (

@@ -6,28 +6,32 @@ import Modal from './Modal';
 const BookItem = ({ book }) => {
   const [modal, setModal] = useState(false);
 
-  const handleClick = moive => {
-    setModal(true);
+  const handleClick = () => {
+    setModal(prev => !prev);
   }
 
   return (
-    <Item>
-      <Image 
-        src={book.cover}
-        alt={book.title}
-        onClick={() => handleClick(book)}
-      />
-      <Info>
-        <h3>{book.title}</h3>
-        <p>{book.author}</p>
-      </Info>
+    <div>
+      <Item>
+        <Image 
+          src={book.cover}
+          alt={book.title}
+          onClick={() => handleClick(book)}
+        />
+        <Info>
+          <h3>{book.title}</h3>
+          <p>{book.author}</p>
+        </Info>
+      </Item>
       {modal && 
         <Modal 
           book={book}
+          setModal={setModal}
+          modal={modal}
         />
       }
-      {modal && <Shadow />}
-    </Item>
+      {modal && <Shadow onClick={handleClick}/>}
+    </div>
   )
 }
 
