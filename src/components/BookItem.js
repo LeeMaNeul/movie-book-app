@@ -19,7 +19,7 @@ const BookItem = ({ book }) => {
           onClick={() => handleClick(book)}
         />
         <Info>
-          <h3>{book.title}</h3>
+          <h3>{book.title.length > 20 ? book.title.slice(0, 25) + "..." : book.title}</h3>
           <p>{book.author}</p>
         </Info>
       </Item>
@@ -39,6 +39,7 @@ export default BookItem;
 
 const Item = styled.div `
   width: 400px;
+  height: min-content;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;

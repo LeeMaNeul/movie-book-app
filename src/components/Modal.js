@@ -36,6 +36,7 @@ const Container = styled.div `
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   z-index: 1000;
   animation: fadeIn 0.4s ease-in-out;
+  overflow: hidden;
 
   @keyframes fadeIn {
     0% {
@@ -76,7 +77,7 @@ const Close = styled.div `
   justify-content: center;
   align-items: center;
   position: absolute; 
-  top: 10px; right: 10px;
+  top: 30px; right: 10px;
   cursor: pointer;
 
   &:hover {

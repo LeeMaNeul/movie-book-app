@@ -1,25 +1,31 @@
-import './App.css';
+  import './App.css';
 import Header from './components/Header';
-import BookItem from './components/BookItem';
 import BookList from './components/BookList';
 import { useState } from 'react';
-import styled from 'styled-components';
+import Footer from './components/Footer';
 
 // http://www.omdbapi.com/?i=tt3896198&apikey={apiKey}
 
 function App() {
   const [selected, setSelected] = useState('Books');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredBooks, setFilteredBooks] = useState([]);
 
   const handleClick = li => {
     setSelected(li);
   }
 
+  const handleSearchChange = q => {
+    setSearchQuery(q);
+  }
+
   return (
     <div className="App"> 
-      <Header selected={selected} handleClick={handleClick}/>
+      <Header selected={selected} handleClick={handleClick} searchQuery={searchQuery} onSearch={handleSearchChange} setFilteredBooks={setFilteredBooks} />
       <div className='inner'>
-        <BookList />
+        <BookList searchQuery={searchQuery} filteredBooks={filteredBooks}/>
       </div>
+      <Footer/>
     </div>
   );
 }

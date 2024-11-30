@@ -1,0 +1,31 @@
+footer {
+  width: 100%;
+  background-color: #f3f4f6;
+}
+
+footer .inner {
+  width: 70vw;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+footer .icons {
+  display: flex;
+  gap: 10px;
+}
+footer .icons > img {
+  width: 20px; height: 20px;
+  &:last-child {
+    margin-left: 3px;
+  }
+}
+
+footer .email {
+  display: flex;
+}
+footer .emailImage {
+  width: 20px; height: 20px;
+  margin-right: 10px;
+  margin-top: -5px;
+}

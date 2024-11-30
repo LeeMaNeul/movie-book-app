@@ -1,28 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BookItem from './BookItem'
-import axios from '../api/axios';
-
-const BookList = () => {
+import axiosList from '../api/axiosList';
+ 
+const BookList = ({ searchQuery, filteredBooks }) => {
   const [bestsellers, setBestsellers] = useState([]);
   const [newbooks, setNewbooks] = useState([]);
   const [specialbooks, setSpecialbooks] = useState([]);
-  
-  // const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-  
-  const fetchData = useCallback(async (queryType) => { // api 데이터 가져옴
+
+  const isNoResults = searchQuery && filteredBooks.length === 0; // input 입력은 했으나 검색 결과가 없는 경우
+    
+  const fetchData = useCallback(async (QueryType) => { // api 데이터 가져옴
     try {
-      const cachedData = localStorage.getItem(queryType);
+      const cachedData = localStorage.getItem(QueryType);
       if (cachedData) return JSON.parse(cachedData);
 
-      const res = await axios.get('https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemList.aspx', {
+      const res = await axiosList.get('https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemList.aspx', {
         params: {
-          QueryType: queryType
+          QueryType
         }
       });
       const data = res.data.item;
       
-      localStorage.setItem(queryType, JSON.stringify(data));
+      localStorage.setItem(QueryType, JSON.stringify(data));
       return data;
     } catch (error) {
       console.log(error);
@@ -49,27 +49,50 @@ const BookList = () => {
     fetchBooks();
   }, [fetchBooks]);
 
+  const filterBooks = books => {
+    if (!searchQuery) return books;
+    return books.filter(book => book.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
 
   return (
     <div>
-      <Category>Best Sellers</Category>
-      <Wrapper>
-        {bestsellers.map((book) => (
-          <BookItem key={book.itemId} book={book} />
-        ))}
-      </Wrapper>
-      <Category>New Special Books</Category>
-      <Wrapper>
-        {specialbooks.map((book) => (
-          <BookItem key={book.itemId} book={book} />
-        ))}
-      </Wrapper>
-      <Category>New Books</Category>
-      <Wrapper>
-        {newbooks.map((book) => (
-          <BookItem key={book.itemId} book={book} />
-        ))}
-      </Wrapper>
+      {isNoResults ? 
+        (<>
+          <Category className='not-found'>"{searchQuery}" 검색 결과가 없습니다.</Category>       
+        </>) :
+        (<>
+          {filteredBooks.length > 0 ?
+            (<>
+              <Category>"{searchQuery}" 검색 결과</Category>
+              <Wrapper>
+                {filteredBooks.map(book => (
+                  <BookItem key={book.itemId} book={book} />
+                ))}
+              </Wrapper>
+            </>) :
+            (<>
+              <Category>Best Sellers</Category>
+              <Wrapper>
+                {filterBooks(bestsellers).map((book) => (
+                  <BookItem key={book.itemId} book={book} />
+                ))}
+              </Wrapper>
+              <Category>New Special Books</Category>
+              <Wrapper>
+                {filterBooks(specialbooks).map((book) => (
+                  <BookItem key={book.itemId} book={book} />
+                ))}
+              </Wrapper>
+              <Category>New Books</Category>
+              <Wrapper>
+                {filterBooks(newbooks).map((book) => (
+                  <BookItem key={book.itemId} book={book} />
+                ))}
+              </Wrapper>
+            </>)
+          }
+        </>)
+      }
     </div>
   )
 }
@@ -77,13 +100,16 @@ const BookList = () => {
 export default BookList
 
 const Category = styled.h2 `
-
+  &.not-found {
+    text-align: center;
+    margin-top: 40px;
+  }
 `
 
 const Wrapper = styled.div `
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 `
 
