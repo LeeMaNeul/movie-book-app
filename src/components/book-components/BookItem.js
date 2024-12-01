@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
 import './BookItem.css';
-import Modal from './Modal';
+import Modal from '../Modal';
 
 const BookItem = ({ book }) => {
   const [modal, setModal] = useState(false);
@@ -16,7 +16,7 @@ const BookItem = ({ book }) => {
         <Image 
           src={book.cover}
           alt={book.title}
-          onClick={() => handleClick(book)}
+          onClick={() => handleClick()}
         />
         <Info>
           <h3>{book.title.length > 20 ? book.title.slice(0, 25) + "..." : book.title}</h3>
@@ -48,7 +48,7 @@ const Item = styled.div `
 
   &:hover {
     transform: scale(1.1);
-    z-index: 3;
+    z-index: 2;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   }
 `

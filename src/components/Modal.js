@@ -1,23 +1,43 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
+import star from '../images/star.png';
 
-const Modal = ({ book, setModal, modal }) => {
-  const bookCover = book.cover.replace("cover200", "cover500");
+const Modal = ({ 
+  book, 
+  setModal,
+  modal, 
+  movie, 
+  cast
+}) => {
+  const bookCover = book?.cover.replace("cover200", "cover500");
+  const moviePoster = `https://image.tmdb.org/t/p/w1280/${movie?.poster_path}`;
+  const date = new Date(movie?.release_date);
+  console.log(cast);
+
   return (
     <Container className={modal ? 'show' : ''}>
       <Inner>
         <Image 
-          src={bookCover}
-          alt={book.title}
+          src={book ? bookCover : moviePoster}
+          alt={book?.title || movie?.title}
         />
         <Wrap>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '30px', width: '90%'}}>{book.title}</h2>
-          <Des style={{ fontSize: '1.2rem', marginBottom: '30px'}}>작가: {book.author}</Des>
-          <Des>ISBN: {book.isbn}</Des>
-          <Des>카테고리: {book.categoryName}</Des>
-          <h3 style={{ fontSize: '1.3rem', marginBottom: '20px'}}>책 소개</h3>
-          <Des style={{ letterSpacing: '1.1px'}}>{book.description}</Des>
-          <Button>구매하기</Button>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '30px', width: '90%'}}>{book?.title || movie?.title}</h2>
+          <Des style={{ fontSize: '1.2rem', marginBottom: '30px'}}>{book ? "작가:" : "감독: "} {book?.author || cast?.crew?.name}</Des>
+          {movie && cast && <Des>출연진: {cast.cast.map(cast => cast.name).join(', ')}</Des>}
+          <Des>{book ? `ISBN: ${book.isbn}` : `개봉일: ${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`}</Des>
+          <Des className='rating'>
+            <img 
+              src={star}
+              alt='star'
+              style={{ width: 25, height: 25}}
+            />
+            {book ? (book?.customerReviewRank / 2).toFixed(1) : (movie?.vote_average / 2).toFixed(1)}
+          </Des>
+          {book && <Des>카테고리: {book.categoryName}</Des>}
+          <h3 style={{ fontSize: '1.3rem', marginBottom: '20px'}}>{book ? "책 소개" : "영화 소개"}</h3>
+          <Des style={{ letterSpacing: '1.1px'}}>{book?.description || movie?.overview}</Des>
+          <Button>{book ? "구매하기" : "예매하기"}</Button>
         </Wrap>
         <Close onClick={() => setModal(false)}></Close>
       </Inner>
@@ -65,9 +85,17 @@ const Des = styled.p `
   font-size: 16px;
   color: #333;
   margin-bottom: 25px;
+
+  &.rating {
+    display: flex;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
 `
 const Image = styled.img `
   width: 100%;
+  object-fit: cover;
 `
 
 const Close = styled.div ` 

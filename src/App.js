@@ -1,10 +1,9 @@
   import './App.css';
 import Header from './components/Header';
-import BookList from './components/BookList';
+import BookList from './components/book-components/BookList';
 import { useState } from 'react';
 import Footer from './components/Footer';
-
-// http://www.omdbapi.com/?i=tt3896198&apikey={apiKey}
+import MovieList from './components/movie-components/MovieList';
 
 function App() {
   const [selected, setSelected] = useState('Books');
@@ -22,8 +21,11 @@ function App() {
   return (
     <div className="App"> 
       <Header selected={selected} handleClick={handleClick} searchQuery={searchQuery} onSearch={handleSearchChange} setFilteredBooks={setFilteredBooks} />
-      <div className='inner'>
-        <BookList searchQuery={searchQuery} filteredBooks={filteredBooks}/>
+      <div className='inner' style={{ marginTop: 100 }}>
+        {selected === 'Books' ? 
+          (<BookList searchQuery={searchQuery} filteredBooks={filteredBooks} />) :
+          (<MovieList />)
+        }
       </div>
       <Footer/>
     </div>

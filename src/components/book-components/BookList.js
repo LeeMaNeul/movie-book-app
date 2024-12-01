@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BookItem from './BookItem'
-import axiosList from '../api/axiosList';
+import axiosList from '../../api/axiosList';
  
 const BookList = ({ searchQuery, filteredBooks }) => {
   const [bestsellers, setBestsellers] = useState([]);
@@ -20,8 +20,7 @@ const BookList = ({ searchQuery, filteredBooks }) => {
           QueryType
         }
       });
-      const data = res.data.item;
-      
+      const data = res.data.item;      
       localStorage.setItem(QueryType, JSON.stringify(data));
       return data;
     } catch (error) {
