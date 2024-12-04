@@ -13,6 +13,7 @@ function App() {
 
   const handleClick = li => { // li focus 함수
     setSelected(li);
+    setSearchQuery('');
   }
 
   const handleSearchChange = q => { // input 값 옵저버 함수

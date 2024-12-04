@@ -12,7 +12,6 @@ const Modal = ({
   const bookCover = book?.cover.replace("cover200", "cover500");
   const moviePoster = `https://image.tmdb.org/t/p/w1280/${movie?.poster_path}`;
   const date = new Date(movie?.release_date);
-  
   return (
     <Container className={modal ? 'show' : ''}>
       <Inner>

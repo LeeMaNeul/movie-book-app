@@ -56,7 +56,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
     } catch (err) {
       console.log(err);
     }
-  }, [fetchData]);
+  }, [fetchData, fetchMovieCast, filteredMovies]); // 해당 코드에서 사용되는 함수와 지속 변화가 있는 변수를 의존성 배열에 넣어야 함
 
   useEffect(() => {
     fetchMovies();

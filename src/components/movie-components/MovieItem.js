@@ -11,7 +11,6 @@ const MovieItem = ({
   const handleClick = () => {
     setModal(prev => !prev);
   }
-
   return (
     <div>
       <Item>
