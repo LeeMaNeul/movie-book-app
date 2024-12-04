@@ -4,7 +4,8 @@ import BookItem from './BookItem'
 import axiosList from '../../api/axiosList';
  
 const BookList = ({ searchQuery, filteredBooks }) => {
-  const [bestsellers, setBestsellers] = useState([]);
+  // 책 리스트 가져오기
+  const [bestsellers, setBestsellers] = useState([]); 
   const [newbooks, setNewbooks] = useState([]);
   const [specialbooks, setSpecialbooks] = useState([]);
 
@@ -36,20 +37,20 @@ const BookList = ({ searchQuery, filteredBooks }) => {
         fetchData('ItemNewSpecial')
       ]); // 병렬로 데이터를 가져오기 위해 Promise.all 사용
 
-      setBestsellers(bestsellersData);
+      setBestsellers(bestsellersData); // 각 리스트들 state에 저장
       setNewbooks(newBooksData);
       setSpecialbooks(specialBooksData);
     } catch (err) {
       console.log("데이터 가져오기 오류 : ", err);
     }
-  }, [fetchData]);
+  }, [fetchData]); // API에 변화가 있을 때마다 실행
 
-  useEffect(() => {
+  useEffect(() => { // API 데이터를 가져온 뒤 불필요한 렌더링 방지를 위해 useEffect 사용
     fetchBooks();
   }, [fetchBooks]);
 
-  const filterBooks = books => {
-    if (!searchQuery) return books;
+  const filterBooks = books => { // 책 정보 검색 함수
+    if (!searchQuery) return books; // 검색어 입력 안했으면 단순 기본 정보 값 출력
     return books.filter(book => book.title.toLowerCase().includes(searchQuery.toLowerCase()));
   }
 
@@ -60,11 +61,11 @@ const BookList = ({ searchQuery, filteredBooks }) => {
           <Category className='not-found'>"{searchQuery}" 검색 결과가 없습니다.</Category>       
         </>) :
         (<>
-          {filteredBooks.length > 0 ?
+          {filteredBooks.length > 0 ? // 검색했을 때 결과가 있으면
             (<>
               <Category>"{searchQuery}" 검색 결과</Category>
               <Wrapper>
-                {filteredBooks.map(book => (
+                {filteredBooks.map(book => ( // 검색 결과를 출력
                   <BookItem key={book.itemId} book={book} />
                 ))}
               </Wrapper>

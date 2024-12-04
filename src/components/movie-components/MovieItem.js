@@ -2,9 +2,12 @@ import React, { useState } from 'react'
 import styled from 'styled-components';
 import Modal from '../Modal';
 
-const MovieItem = ({ movie, backdropUrl, cast }) => {
+const MovieItem = ({ 
+  movie,
+  backdropUrl, 
+  cast
+}) => {
   const [modal, setModal] = useState(false);
-
   const handleClick = () => {
     setModal(prev => !prev);
   }
@@ -18,7 +21,7 @@ const MovieItem = ({ movie, backdropUrl, cast }) => {
           onClick={() => handleClick()}
         />
         <Info>
-          <h3>{movie.title.length > 20 ? movie.title.slice(0, 25) + "..." : movie.title}</h3>
+          <h3>{(movie.title.length > 20 ? movie.title.slice(0, 25) + "..." : movie.title)}</h3>
           <p>{cast?.crew?.name}</p>
         </Info>
       </Item>

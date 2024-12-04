@@ -4,22 +4,25 @@ import styled from 'styled-components';
 import MovieItem from './MovieItem';
 import requests from '../../api/requests';
 
-const MovieList = () => {
+const MovieList = ({ searchQuery, filteredMovies }) => {
+  // 각 리스트 저장 state
   const [topRated, setTopRated] = useState([]);
   const [trending, setTrending] = useState([]);
   const [nowPlaying, setNowPlaying] = useState([]);
 
   const [movieCast, setMovieCast] = useState({});
 
-  const fetchData = useCallback(async (url) => {
+  const isNoResults = searchQuery && filteredMovies.length === 0; // input 입력은 했으나 검색 결과가 없는 경우
+
+  const fetchData = useCallback(async (url) => { // 영화 리스트 가져오기
     const res = await axios.get(url);
     const data = res.data.results.slice(0, 3);
     return data;
   }, []);
 
-  const fetchMovieCast = useCallback(async (id) => {
+  const fetchMovieCast = useCallback(async (id) => { // 특정 영화 출연진 및 감독진 정보 가져오기
     try {
-      const res = await axios.get(`/movie/${id}/credits`);
+      const res = await axios.get(`/movie/${id}/credits`); // baseUrl에 주소 이어서 붙이기
       const arr = {
         cast: res.data.cast.slice(0, 5),
         crew: res.data.crew.find(person => person.job === "Director")
@@ -28,7 +31,7 @@ const MovieList = () => {
     } catch (err) {
       console.log(err);
     }
-  });
+  }, []);
 
   const fetchMovies = useCallback(async () => {
     try {
@@ -41,12 +44,15 @@ const MovieList = () => {
       setTrending(trendingData);
       setNowPlaying(nowPlayingData);
 
-      const castData = {};
-      for (const movie of [...topRatedData, ...trendingData, ...nowPlayingData]) {
-        const cast = await fetchMovieCast(movie.id);
-        castData[movie.id] = cast;  // 영화 ID를 키로 출연진 데이터를 저장
-      }
-      setMovieCast(castData);
+      const castData = await Promise.all(
+        [...topRatedData, ...trendingData, ...nowPlayingData, ...filteredMovies].map(async movie => {
+          const cast = await fetchMovieCast(movie.id);
+          return { 
+            [movie.id]: cast
+          };
+        })
+      )
+      setMovieCast(Object.assign({}, ...castData));
     } catch (err) {
       console.log(err);
     }
@@ -58,49 +64,75 @@ const MovieList = () => {
 
   return (
     <div>
-      <Category>Top Rated</Category>
-      <Wrapper>
-        {topRated.map((movie) => {
-          const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
-          return (
-            <MovieItem 
-              key={movie.id} 
-              movie={movie} 
-              backdropUrl={backdropUrl}
-              cast={movieCast[movie.id]}
-            />
-          );
-        })}
-      </Wrapper>
-      <Category>Trending</Category>
-      <Wrapper>
-        {trending.map((movie) => {
-          const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
-          return (
-            <MovieItem 
-              key={movie.id} 
-              movie={movie} 
-              backdropUrl={backdropUrl}
-              cast={movieCast[movie.id]}
-            />
-          );
-        })}
-      </Wrapper>
-      <Category>Now Playing</Category>
-      <Wrapper>
-        {nowPlaying.map((movie) => {
-          const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
-          return (
-            <MovieItem 
-              key={movie.id} 
-              movie={movie} 
-              backdropUrl={backdropUrl}
-              cast={movieCast[movie.id]}
-            />
-          );
-        })}
-      </Wrapper>
-      
+      {isNoResults ? 
+        (<>
+          <Category className='not-found'>"{searchQuery}" 검색 결과가 없습니다.</Category>
+        </>) :
+        (<>
+          {filteredMovies.length > 0 ? 
+            (<>
+              <Category>"{searchQuery}" 검색 결과</Category>
+              <Wrapper>
+                {filteredMovies.map(movie => {
+                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  return (
+                    <MovieItem 
+                      key={movie.id} 
+                      movie={movie}
+                      backdropUrl={backdropUrl}
+                      cast={movieCast[movie.id]}
+                    />
+                  )
+                })}
+              </Wrapper>
+            </>) : 
+            (<>
+              <Category>Top Rated</Category>
+              <Wrapper>
+                {topRated.map((movie) => {
+                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  return (
+                    <MovieItem 
+                      key={movie.id} 
+                      movie={movie} 
+                      backdropUrl={backdropUrl}
+                      cast={movieCast[movie.id]}
+                    />
+                  );
+                })}
+              </Wrapper>
+              <Category>Trending</Category>
+              <Wrapper>
+                {trending.map((movie) => {
+                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  return (
+                    <MovieItem 
+                      key={movie.id} 
+                      movie={movie} 
+                      backdropUrl={backdropUrl}
+                      cast={movieCast[movie.id]}
+                    />
+                  );
+                })}
+              </Wrapper>
+              <Category>Now Playing</Category>
+              <Wrapper>
+                {nowPlaying.map((movie) => {
+                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  return (
+                    <MovieItem 
+                      key={movie.id} 
+                      movie={movie} 
+                      backdropUrl={backdropUrl}
+                      cast={movieCast[movie.id]}
+                    />
+                  );
+                })}
+              </Wrapper>
+            </>)
+          }
+        </>)
+      }
     </div>
   )
 }
