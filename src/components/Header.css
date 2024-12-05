@@ -62,3 +62,9 @@ header .search-wrapper .search {
   color: #9CA3AF;
   margin-top: 9px;
 }
+
+@media (max-width: 1024px) {
+  header .logo {
+    font-size: 24px;
+  }
+}

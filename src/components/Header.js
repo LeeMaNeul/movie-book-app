@@ -78,7 +78,6 @@ const Header = ({
         <ul className='links'>
           <li className={`link ${selected === 'Books' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('Books')}>Books</a></li>
           <li className={`link ${selected === 'Movies' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('Movies')}>Movies</a></li>
-          <li className={`link ${selected === 'About' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('About')}>About</a></li>
         </ul>
         <div className='search-wrapper'>
           <input 

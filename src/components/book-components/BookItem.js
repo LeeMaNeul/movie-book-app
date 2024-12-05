@@ -19,7 +19,7 @@ const BookItem = ({ book }) => {
           onClick={() => handleClick()}
         />
         <Info>
-          <h3>{book.title.length > 20 ? book.title.slice(0, 25) + "..." : book.title}</h3>
+          <h3>{book.title.length > 20 ? book.title.slice(0, 20) + "..." : book.title}</h3>
           <p>{book.author}</p>
         </Info>
       </Item>
@@ -38,7 +38,7 @@ const BookItem = ({ book }) => {
 export default BookItem;
 
 const Item = styled.div `
-  width: 400px;
+  max-width: 400px;
   height: min-content;
   border-radius: 10px;
   overflow: hidden;
@@ -50,6 +50,10 @@ const Item = styled.div `
     transform: scale(1.1);
     z-index: 2;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 1.5rem;
   }
 `
 

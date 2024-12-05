@@ -49,11 +49,6 @@ const BookList = ({ searchQuery, filteredBooks }) => {
     fetchBooks();
   }, [fetchBooks]);
 
-  const filterBooks = books => { // 책 정보 검색 함수
-    if (!searchQuery) return books; // 검색어 입력 안했으면 단순 기본 정보 값 출력
-    return books.filter(book => book.title.toLowerCase().includes(searchQuery.toLowerCase()));
-  }
-
   return (
     <div>
       {isNoResults ? 
@@ -73,19 +68,19 @@ const BookList = ({ searchQuery, filteredBooks }) => {
             (<>
               <Category>Best Sellers</Category>
               <Wrapper>
-                {filterBooks(bestsellers).map((book) => (
+                {bestsellers.map((book) => (
                   <BookItem key={book.itemId} book={book} />
                 ))}
               </Wrapper>
               <Category>New Special Books</Category>
               <Wrapper>
-                {filterBooks(specialbooks).map((book) => (
+                {specialbooks.map((book) => (
                   <BookItem key={book.itemId} book={book} />
                 ))}
               </Wrapper>
               <Category>New Books</Category>
               <Wrapper>
-                {filterBooks(newbooks).map((book) => (
+                {newbooks.map((book) => (
                   <BookItem key={book.itemId} book={book} />
                 ))}
               </Wrapper>
@@ -111,5 +106,13 @@ const Wrapper = styled.div `
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin-bottom: 3rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+  }
 `
 

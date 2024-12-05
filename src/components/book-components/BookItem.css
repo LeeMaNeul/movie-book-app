@@ -8,3 +8,12 @@ p {
   font-weight: 500;
   margin-top: -5px;
 }
+
+@media (max-width: 1024px) {
+  h3 {
+    font-size: 0.9rem;
+  }
+  p {
+    font-size: 0.8rem;
+  }
+}

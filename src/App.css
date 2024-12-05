@@ -7,3 +7,9 @@
 .App {
   position: relative;
 }
+
+@media (max-width: 1280px) {
+  .inner {
+    width: 80vw;
+  }
+}

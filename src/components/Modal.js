@@ -20,8 +20,8 @@ const Modal = ({
           alt={book?.title || movie?.title}
         />
         <Wrap>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '30px', width: '90%'}}>{book?.title || movie?.title}</h2>
-          <Des style={{ fontSize: '1.2rem', marginBottom: '30px'}}>{book ? "작가:" : "감독: "} {book?.author || cast?.crew?.name}</Des>
+          <h2 style={{ fontSize: '1.5em', marginBottom: '30px', width: '90%'}}>{book?.title || movie?.title}</h2>
+          <Des style={{ fontSize: '1.2em', marginBottom: '30px'}}>{book ? "작가:" : "감독: "} {book?.author || cast?.crew?.name}</Des>
           {(movie) && cast && <Des>출연진: {cast.cast.map(cast => cast.name).join(', ')}</Des>}
           <Des>{book ? `ISBN: ${book.isbn}` : `개봉일: ${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`}</Des>
           <Des className='rating'>
@@ -33,8 +33,8 @@ const Modal = ({
             {book ? (book?.customerReviewRank / 2).toFixed(1) : (movie.vote_average / 2).toFixed(1)}
           </Des>
           {book && <Des>카테고리: {book.categoryName}</Des>}
-          <h3 style={{ fontSize: '1.3rem', marginBottom: '20px'}}>{book ? "책 소개" : "영화 소개"}</h3>
-          <Des style={{ letterSpacing: '1.1px'}}>{book?.description || movie.overview}</Des>
+          <h3 style={{ fontSize: '1.3em', marginBottom: '20px'}}>{book ? "책 소개" : "영화 소개"}</h3>
+          <Des className='description'>{book?.description || movie.overview}</Des>
           <Button>{book ? "구매하기" : "예매하기"}</Button>
         </Wrap>
         <Close onClick={() => setModal(false)}></Close>
@@ -55,6 +55,7 @@ const Container = styled.div `
   z-index: 1000;
   animation: fadeIn 0.4s ease-in-out;
   overflow: hidden;
+  min-width: 800px;
 
   @keyframes fadeIn {
     0% {
@@ -67,6 +68,10 @@ const Container = styled.div `
       transform: translate(-50%, -50%);
     }
   }
+
+  @media (max-width: 1280px) {
+    font-size: 0.9rem;
+  }
 `
 
 const Inner = styled.div `
@@ -74,13 +79,13 @@ const Inner = styled.div `
   grid-template-columns: repeat(2, 1fr);
 `
 const Wrap = styled.div `
-  padding: 1rem 1.25rem;
+  padding: 1em 1.25em;
   width: 90%;
 `
 
 const Des = styled.p `
   font-family: 'Malgun Gothic', sans-serif;
-  font-size: 16px;
+  font-size: 1em;
   color: #333;
   margin-bottom: 25px;
 
@@ -88,7 +93,17 @@ const Des = styled.p `
     display: flex;
     gap: 10px;
     font-weight: 600;
-    font-size: 1.2rem;
+    font-size: 1.2em;
+  }
+
+  &.description {
+    letter-spacing: 1.1px;
+  }
+
+  @media (max-width: 1280px) {
+    &.description {
+      letter-spacing: 0;
+    }
   }
 `
 const Image = styled.img `
@@ -127,11 +142,11 @@ const Button = styled.button `
   width: 100%;
   border: none;
   border-radius: 10px;
-  padding: 1rem;
+  padding: 1em;
   background-color: rgb(37, 99, 235);
   color: #fff;
   text-align: center;
-  font-size: 1rem;
+  font-size: 1em;
   cursor: pointer;
 
   &:hover {

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import MovieItem from './MovieItem';
 import requests from '../../api/requests';
 
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
+
 const MovieList = ({ searchQuery, filteredMovies }) => {
   // 각 리스트 저장 state
   const [topRated, setTopRated] = useState([]);
@@ -74,7 +76,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
               <Category>"{searchQuery}" 검색 결과</Category>
               <Wrapper>
                 {filteredMovies.map(movie => {
-                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
                   return (
                     <MovieItem 
                       key={movie.id} 
@@ -90,7 +92,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
               <Category>Top Rated</Category>
               <Wrapper>
                 {topRated.map((movie) => {
-                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
                   return (
                     <MovieItem 
                       key={movie.id} 
@@ -104,7 +106,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
               <Category>Trending</Category>
               <Wrapper>
                 {trending.map((movie) => {
-                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
                   return (
                     <MovieItem 
                       key={movie.id} 
@@ -118,7 +120,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
               <Category>Now Playing</Category>
               <Wrapper>
                 {nowPlaying.map((movie) => {
-                  const backdropUrl = `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`;
+                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
                   return (
                     <MovieItem 
                       key={movie.id} 
@@ -148,4 +150,12 @@ const Wrapper = styled.div `
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin-bottom: 3rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  };
+
+  @media (max-width: 768px) {
+    display: block;
+  }
 `

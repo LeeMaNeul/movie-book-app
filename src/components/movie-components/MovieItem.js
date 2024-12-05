@@ -40,7 +40,7 @@ const MovieItem = ({
 export default MovieItem;
 
 const Item = styled.div `
-  width: 400px;
+  max-width: 400px;
   height: min-content;
   border-radius: 10px;
   overflow: hidden;
