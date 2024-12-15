@@ -2,8 +2,19 @@ import React, { useCallback, useEffect, useState } from 'react'
 import './Header.css';
 import axiosSearch from '../api/axiosSearch';
 import axiosMovieList from '../api/axiosMovieList';
+import { Book, BookApiResponse } from '../Book';
+import { Movie, MovieApiResponse } from '../Movie';
 
-const Header = ({ 
+interface props {
+  handleClick(li:string): void;
+  selected: string;
+  searchQuery: string;
+  onSearch(q: string): void;
+  setFilteredBooks(books: Book[]):void;
+  setFilteredMovies(movies: Movie[]):void; 
+}
+
+const Header:React.FC<props> = ({ 
   handleClick, 
   selected,
   searchQuery,
@@ -11,10 +22,10 @@ const Header = ({
   setFilteredBooks, // 책 검색 state 저장 함수
   setFilteredMovies // 영화 검색 state 저장 함수
 }) => {
-  const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  const handleSearchChange = e => {
-    const query = e.target.value;
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const query:string = e.target.value;
     onSearch(query); // input 창에서 타이핑하면 onSearch 함수 실행되고, App.js에 있는 state에 저장됨 / 이 state를 BookList 컴포넌트에 전달해줌
 
     if (selected === 'Books') {
@@ -28,7 +39,7 @@ const Header = ({
     }
   }
 
-  const fetchSearchBooks = useCallback(async (Query) => {
+  const fetchSearchBooks = useCallback(async (Query: string): Promise<void> => {
     if (!Query) {
       setFilteredBooks([]); // 검색 후 지울 경우 기본 책 리스트 출력
       return; // 검색어 없으면 API 호출 X
@@ -41,7 +52,7 @@ const Header = ({
     }
 
     try {
-      const res = await axiosSearch.get('https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemSearch.aspx', {
+      const res = await axiosSearch.get<BookApiResponse>('https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemSearch.aspx', {
         params: {
           Query
         }
@@ -53,13 +64,13 @@ const Header = ({
     }
   }, [setFilteredBooks]);
 
-  const fetchSearchMovies = useCallback(async query => {
+  const fetchSearchMovies = useCallback(async (query: string):Promise<void> => {
     if (!query) {
       setFilteredMovies([]);
       return;
     }
     try {
-      const res = await axiosMovieList.get(`/search/movie?query=${query}`);
+      const res = await axiosMovieList.get<MovieApiResponse>(`/search/movie?query=${query}`);
       setFilteredMovies(res.data.results);
     } catch (err) {
       console.log(err);

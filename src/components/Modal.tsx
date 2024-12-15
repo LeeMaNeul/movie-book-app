@@ -1,17 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 import star from '../images/star.png';
+import { Book } from '../Book';
+import { Movie, Person } from '../Movie';
 
-const Modal = ({ 
+interface props {
+  book?: Book | null;
+  movie?: Movie | null;
+  setModal: (props: boolean)=>void;
+  modal: boolean;
+  cast?: {
+    cast?: Person[] | null;
+    crew?: Person | null;
+  }
+}
+
+const Modal:React.FC<props> = ({ 
   book, 
   setModal,
   modal, 
   movie,
   cast
 }) => {
-  const bookCover = book?.cover.replace("cover200", "cover500");
-  const moviePoster = `https://image.tmdb.org/t/p/w1280/${movie?.poster_path}`;
-  const date = new Date(movie?.release_date);
+  const bookCover:string = book?.cover.replace("cover200", "cover500") || "";
+  const moviePoster:string = `https://image.tmdb.org/t/p/w1280/${movie?.poster_path}`;
+  const date = new Date(movie?.release_date as string);
   return (
     <Container className={modal ? 'show' : ''}>
       <Inner>
@@ -22,7 +35,7 @@ const Modal = ({
         <Wrap>
           <h2 style={{ fontSize: '1.5em', marginBottom: '30px', width: '90%'}}>{book?.title || movie?.title}</h2>
           <Des style={{ fontSize: '1.2em', marginBottom: '30px'}}>{book ? "작가:" : "감독: "} {book?.author || cast?.crew?.name}</Des>
-          {(movie) && cast && <Des>출연진: {cast.cast.map(cast => cast.name).join(', ')}</Des>}
+          {(movie) && cast && <Des>출연진: {cast?.cast?.map(cast => cast.name).join(', ')}</Des>}
           <Des>{book ? `ISBN: ${book.isbn}` : `개봉일: ${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`}</Des>
           <Des className='rating'>
             <img 
@@ -30,11 +43,11 @@ const Modal = ({
               alt='star'
               style={{ width: 25, height: 25}}
             />
-            {book ? (book?.customerReviewRank / 2).toFixed(1) : (movie.vote_average / 2).toFixed(1)}
+            {book ? (book?.customerReviewRank as number / 2).toFixed(1) : (movie?.vote_average as number/ 2).toFixed(1)}
           </Des>
           {book && <Des>카테고리: {book.categoryName}</Des>}
           <h3 style={{ fontSize: '1.3em', marginBottom: '20px'}}>{book ? "책 소개" : "영화 소개"}</h3>
-          <Des className='description'>{book?.description || movie.overview}</Des>
+          <Des className='description'>{book?.description || movie?.overview}</Des>
           <Button>{book ? "구매하기" : "예매하기"}</Button>
         </Wrap>
         <Close onClick={() => setModal(false)}></Close>

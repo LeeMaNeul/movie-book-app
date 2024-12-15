@@ -4,21 +4,23 @@ import BookList from './components/book-components/BookList';
 import { useState } from 'react';
 import Footer from './components/Footer';
 import MovieList from './components/movie-components/MovieList';
+import { Book } from './Book';
+import { Movie } from './Movie';
 
-function App() {
-  const [selected, setSelected] = useState('Books'); // 헤더에서 li 선택 시 focus 효과를 주기 위한 state
-  const [searchQuery, setSearchQuery] = useState(''); // 헤더에 있는 input 태그의 값 옵저버 state
-  const [filteredBooks, setFilteredBooks] = useState([]); // 검색 시 필터링된 책 목록을 저장하는 state
-  const [filteredMovies, setFilteredMovies] = useState([]); // 검색 시 필터링된 영화 목록을 저장하는 state
+const App:React.FC = () => {
+  const [selected, setSelected] = useState<string>('Books'); // 헤더에서 li 선택 시 focus 효과를 주기 위한 state
+  const [searchQuery, setSearchQuery] = useState<string>(''); // 헤더에 있는 input 태그의 값 옵저버 state
+  const [filteredBooks, setFilteredBooks] = useState<Book[]>([]); // 검색 시 필터링된 책 목록을 저장하는 state
+  const [filteredMovies, setFilteredMovies] = useState<Movie[]>([]); // 검색 시 필터링된 영화 목록을 저장하는 state
 
-  const handleClick = li => { // li focus 함수
+  const handleClick = (li:string):void => { // li focus 함수
     setSelected(li);
     setSearchQuery('');
     setFilteredBooks([]);
     setFilteredMovies([]);
   }
 
-  const handleSearchChange = q => { // input 값 옵저버 함수
+  const handleSearchChange = (q: string): void => { // input 값 옵저버 함수
     setSearchQuery(q);
   }
 
@@ -38,7 +40,7 @@ function App() {
             searchQuery={searchQuery}
             filteredBooks={filteredBooks} 
           />) :
-          (<MovieList 
+          (<MovieList
             searchQuery={searchQuery}
             filteredMovies={filteredMovies}
           />)

@@ -3,28 +3,50 @@ import axios from '../../api/axiosMovieList';
 import styled from 'styled-components';
 import MovieItem from './MovieItem';
 import requests from '../../api/requests';
+import { Movie, Character, MovieApiResponse } from '../../Movie';
 
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
+const IMAGE_BASE_URL: string = 'https://image.tmdb.org/t/p/w1280';
 
-const MovieList = ({ searchQuery, filteredMovies }) => {
+interface props {
+  searchQuery: string | null;
+  filteredMovies: Movie[];
+}
+
+type MovieCast = {
+  cast: [{
+    id: number;
+    name: string;
+  }];
+  crew?: {
+    id: number;
+    name: string;
+    job: string;
+  };
+};
+
+type MovieCastMap = {
+  [key: string]: MovieCast | null;
+};
+
+const MovieList:React.FC<props> = ({ searchQuery, filteredMovies }) => {
   // 각 리스트 저장 state
-  const [topRated, setTopRated] = useState([]);
-  const [trending, setTrending] = useState([]);
-  const [nowPlaying, setNowPlaying] = useState([]);
+  const [topRated, setTopRated] = useState<Movie[]>([]);
+  const [trending, setTrending] = useState<Movie[]>([]);
+  const [nowPlaying, setNowPlaying] = useState<Movie[]>([]);
 
-  const [movieCast, setMovieCast] = useState({});
+  const [movieCast, setMovieCast] = useState<MovieCastMap>({});
 
   const isNoResults = searchQuery && filteredMovies.length === 0; // input 입력은 했으나 검색 결과가 없는 경우
 
-  const fetchData = useCallback(async (url) => { // 영화 리스트 가져오기
-    const res = await axios.get(url);
+  const fetchData = useCallback(async (url: string):Promise<Movie[]> => { // 영화 리스트 가져오기
+    const res = await axios.get<MovieApiResponse>(url);
     const data = res.data.results.slice(0, 3);
     return data;
   }, []);
 
-  const fetchMovieCast = useCallback(async (id) => { // 특정 영화 출연진 및 감독진 정보 가져오기
+  const fetchMovieCast = useCallback(async (id:Number) => { // 특정 영화 출연진 및 감독진 정보 가져오기
     try {
-      const res = await axios.get(`/movie/${id}/credits`); // baseUrl에 주소 이어서 붙이기
+      const res = await axios.get<Character>(`/movie/${id}/credits`); // baseUrl에 주소 이어서 붙이기
       const arr = {
         cast: res.data.cast.slice(0, 5),
         crew: res.data.crew.find(person => person.job === "Director")
@@ -35,7 +57,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
     }
   }, []);
 
-  const fetchMovies = useCallback(async () => {
+  const fetchMovies = useCallback(async (): Promise<void> => {
     try {
       const [topRatedData, trendingData, nowPlayingData] = await Promise.all([
         fetchData(requests.fetchTopRated),
@@ -47,7 +69,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
       setNowPlaying(nowPlayingData);
 
       const castData = await Promise.all(
-        [...topRatedData, ...trendingData, ...nowPlayingData, ...filteredMovies].map(async movie => {
+        [...topRatedData, ...trendingData, ...nowPlayingData, ...filteredMovies].map(async (movie: Movie) => {
           const cast = await fetchMovieCast(movie.id);
           return { 
             [movie.id]: cast
@@ -82,7 +104,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
                       key={movie.id} 
                       movie={movie}
                       backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id]}
+                      cast={movieCast[movie.id] || undefined}
                     />
                   )
                 })}
@@ -91,14 +113,14 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
             (<>
               <Category>Top Rated</Category>
               <Wrapper>
-                {topRated.map((movie) => {
+                {topRated.map((movie: Movie) => {
                   const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
                   return (
                     <MovieItem 
                       key={movie.id} 
                       movie={movie} 
                       backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id]}
+                      cast={movieCast[movie.id] || undefined}
                     />
                   );
                 })}
@@ -112,7 +134,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
                       key={movie.id} 
                       movie={movie} 
                       backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id]}
+                      cast={movieCast[movie.id] || undefined}
                     />
                   );
                 })}
@@ -126,7 +148,7 @@ const MovieList = ({ searchQuery, filteredMovies }) => {
                       key={movie.id} 
                       movie={movie} 
                       backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id]}
+                      cast={movieCast[movie.id] || undefined}
                     />
                   );
                 })}

@@ -2,26 +2,33 @@ import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BookItem from './BookItem'
 import axiosList from '../../api/axiosList';
+import { Book, BookApiResponse } from '../../Book';
+
+interface props {
+  searchQuery: string | null;
+  filteredBooks: Book[];
+}
+
  
-const BookList = ({ searchQuery, filteredBooks }) => {
+const BookList:React.FC<props> = ({ searchQuery, filteredBooks }) => {
   // 책 리스트 가져오기
-  const [bestsellers, setBestsellers] = useState([]); 
-  const [newbooks, setNewbooks] = useState([]);
-  const [specialbooks, setSpecialbooks] = useState([]);
+  const [bestsellers, setBestsellers] = useState<Book[] | undefined>([]); 
+  const [newbooks, setNewbooks] = useState<Book[]| undefined>([]);
+  const [specialbooks, setSpecialbooks] = useState<Book[]| undefined>([]);
 
   const isNoResults = searchQuery && filteredBooks.length === 0; // input 입력은 했으나 검색 결과가 없는 경우
     
-  const fetchData = useCallback(async (QueryType) => { // api 데이터 가져옴
+  const fetchData = useCallback(async (QueryType: string):Promise<Book[] | undefined> => { // api 데이터 가져옴
     try {
       const cachedData = localStorage.getItem(QueryType);
       if (cachedData) return JSON.parse(cachedData);
 
-      const res = await axiosList.get('https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemList.aspx', {
+      const res = await axiosList.get<BookApiResponse>('https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemList.aspx', {
         params: {
           QueryType
         }
       });
-      const data = res.data.item;      
+      const data:Book[] = res.data.item;
       localStorage.setItem(QueryType, JSON.stringify(data));
       return data;
     } catch (error) {
@@ -61,27 +68,27 @@ const BookList = ({ searchQuery, filteredBooks }) => {
               <Category>"{searchQuery}" 검색 결과</Category>
               <Wrapper>
                 {filteredBooks.map(book => ( // 검색 결과를 출력
-                  <BookItem key={book.itemId} book={book} />
+                  <BookItem key={book.itemId as number} book={book} />
                 ))}
               </Wrapper>
             </>) :
             (<>
               <Category>Best Sellers</Category>
               <Wrapper>
-                {bestsellers.map((book) => (
-                  <BookItem key={book.itemId} book={book} />
+                {(bestsellers as Book[]).map((book) => (
+                  <BookItem key={book.itemId as number} book={book} />
                 ))}
               </Wrapper>
               <Category>New Special Books</Category>
               <Wrapper>
-                {specialbooks.map((book) => (
-                  <BookItem key={book.itemId} book={book} />
+                {(specialbooks as Book[]).map((book) => (
+                  <BookItem key={book.itemId as number} book={book} />
                 ))}
               </Wrapper>
               <Category>New Books</Category>
               <Wrapper>
-                {newbooks.map((book) => (
-                  <BookItem key={book.itemId} book={book} />
+                {(newbooks as Book[]).map((book) => (
+                  <BookItem key={book.itemId as number} book={book} />
                 ))}
               </Wrapper>
             </>)

@@ -7,7 +7,7 @@ import facebook from '../images/facebook.png';
 import instagram from '../images/instagram.png';
 
 
-const Footer = ({ isNoResult }) => {
+const Footer:React.FC = () => {
   return (
     <footer>
       <div className='inner'>

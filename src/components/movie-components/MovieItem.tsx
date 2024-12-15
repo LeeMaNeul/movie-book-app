@@ -1,33 +1,44 @@
 import React, { useState } from 'react'
 import styled from 'styled-components';
-import './BookItem.css';
 import Modal from '../Modal';
+import { Movie, Person } from '../../Movie';
 
-const BookItem = ({ book }) => {
-  const [modal, setModal] = useState(false);
+interface props {
+  movie: Movie;
+  backdropUrl: string;
+  cast?: {
+    crew?: Person;
+  };
+}
 
+const MovieItem:React.FC<props> = ({ 
+  movie,
+  backdropUrl, 
+  cast
+}) => {
+  const [modal, setModal] = useState<boolean>(false);
   const handleClick = () => {
     setModal(prev => !prev);
   }
-
   return (
     <div>
       <Item>
         <Image 
-          src={book.cover}
-          alt={book.title}
+          src={backdropUrl}
+          alt={movie.title}
           onClick={() => handleClick()}
         />
         <Info>
-          <h3>{book.title.length > 20 ? book.title.slice(0, 20) + "..." : book.title}</h3>
-          <p>{book.author}</p>
+          <h3>{(movie.title.length > 20 ? movie.title.slice(0, 25) + "..." : movie.title)}</h3>
+          <p>{cast?.crew?.name}</p>
         </Info>
       </Item>
       {modal && 
         <Modal 
-          book={book}
+          movie={movie}
           setModal={setModal}
           modal={modal}
+          cast={cast}
         />
       }
       {modal && <Shadow onClick={handleClick}/>}
@@ -35,7 +46,7 @@ const BookItem = ({ book }) => {
   )
 }
 
-export default BookItem;
+export default MovieItem;
 
 const Item = styled.div `
   max-width: 400px;
@@ -51,16 +62,11 @@ const Item = styled.div `
     z-index: 2;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   }
-
-  @media (max-width: 768px) {
-    margin-bottom: 1.5rem;
-  }
 `
 
 const Image = styled.img `
   width: 100%;
-  height: 285px;
-  object-fit: contain;
+  height: min-content;
 `
 
 const Info = styled.div `
