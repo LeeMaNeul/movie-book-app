@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const bookListAPI = axios.create({
-  baseURL: 'http://www.aladin.co.kr/ttb/api/ItemList.aspx',
+  baseURL: 'https://cors-anywhere.herokuapp.com/http://www.aladin.co.kr/ttb/api/ItemList.aspx',
   params: {
     ttbkey: "ttbtigers02721314001",
     MaxResults: 3,

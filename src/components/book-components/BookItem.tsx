@@ -9,10 +9,12 @@ interface props {
 }
 
 const BookItem:React.FC<props> = ({ book }) => {
-  const [modal, setModal] = useState(false);
-
+  const [modal, setModal] = useState<boolean>(false);
   const handleClick = () => {
     setModal(prev => !prev);
+  }
+  const truncate = (str: string, length: number) => {
+    return str.length > length ? str.slice(0, length) + "..." : str;
   }
 
   return (
@@ -21,18 +23,18 @@ const BookItem:React.FC<props> = ({ book }) => {
         <Image 
           src={book.cover}
           alt={book.title}
-          onClick={() => handleClick()}
+          onClick={handleClick}
         />
         <Info>
-          <h3>{book.title.length > 20 ? book.title.slice(0, 20) + "..." : book.title}</h3>
+          <h3>{truncate(book.title, 20)}</h3>
           <p>{book.author}</p>
         </Info>
       </Item>
       {modal && 
         <Modal 
-          book={book}
-          setModal={setModal}
           modal={modal}
+          setModal={setModal}
+          book={book}
         />
       }
       {modal && <Shadow onClick={handleClick}/>}

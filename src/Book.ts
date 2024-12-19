@@ -5,8 +5,8 @@ export interface Book {
     isbn: string;
     title: string;
     categoryName?: string;
-    customerReviewRank?: Number;
-    itemId: Number;
+    customerReviewRank?: number;
+    itemId: number;
 };
 
 export interface BookApiResponse {

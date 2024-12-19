@@ -3,13 +3,13 @@ import axios from '../../api/axiosMovieList';
 import styled from 'styled-components';
 import MovieItem from './MovieItem';
 import requests from '../../api/requests';
-import { Movie, Character, MovieApiResponse } from '../../Movie';
+import { Movie, Character } from '../../Movie';
+import { useMovieStore } from '../../Store';
 
 const IMAGE_BASE_URL: string = 'https://image.tmdb.org/t/p/w1280';
 
 interface props {
   searchQuery: string | null;
-  filteredMovies: Movie[];
 }
 
 type MovieCast = {
@@ -28,23 +28,24 @@ type MovieCastMap = {
   [key: string]: MovieCast | null;
 };
 
-const MovieList:React.FC<props> = ({ searchQuery, filteredMovies }) => {
-  // 각 리스트 저장 state
-  const [topRated, setTopRated] = useState<Movie[]>([]);
-  const [trending, setTrending] = useState<Movie[]>([]);
-  const [nowPlaying, setNowPlaying] = useState<Movie[]>([]);
+const MovieList:React.FC<props> = ({ searchQuery }) => {
+  // // 각 리스트 저장 state
+  const {
+    topRatedMovies, setTopRatedMovies,
+    trendingMovies, setTrendingMovies,
+    nowPlayingMovies, setNowPlayingMovies,
+    loading
+  } = useMovieStore();
+  const fetchData = useMovieStore(state => state.fetchMovies);
+  const filteredMovies = useMovieStore(state => state.movies);
 
-  const [movieCast, setMovieCast] = useState<MovieCastMap>({});
+  const [movieCast, setMovieCast] = useState<MovieCastMap>({}); // 특정 컴포넌트에서만 사용되는 데이터는 로컬 state 사용
 
-  const isNoResults = searchQuery && filteredMovies.length === 0; // input 입력은 했으나 검색 결과가 없는 경우
+  // input 입력은 했으나 검색 결과가 없는 경우
+  const isNoResults = searchQuery && filteredMovies.length === 0; 
 
-  const fetchData = useCallback(async (url: string):Promise<Movie[]> => { // 영화 리스트 가져오기
-    const res = await axios.get<MovieApiResponse>(url);
-    const data = res.data.results.slice(0, 3);
-    return data;
-  }, []);
-
-  const fetchMovieCast = useCallback(async (id:Number) => { // 특정 영화 출연진 및 감독진 정보 가져오기
+  // 특정 영화 출연진 및 감독진 정보 가져오기
+  const fetchMovieCast = useCallback(async (id: number) => { 
     try {
       const res = await axios.get<Character>(`/movie/${id}/credits`); // baseUrl에 주소 이어서 붙이기
       const arr = {
@@ -64,23 +65,23 @@ const MovieList:React.FC<props> = ({ searchQuery, filteredMovies }) => {
         fetchData(requests.fetchTrending),
         fetchData(requests.fetchNowPlaying),
       ]);
-      setTopRated(topRatedData);
-      setTrending(trendingData);
-      setNowPlaying(nowPlayingData);
+      setTopRatedMovies(topRatedData);
+      setTrendingMovies(trendingData);
+      setNowPlayingMovies(nowPlayingData);
 
-      const castData = await Promise.all(
-        [...topRatedData, ...trendingData, ...nowPlayingData, ...filteredMovies].map(async (movie: Movie) => {
-          const cast = await fetchMovieCast(movie.id);
-          return { 
-            [movie.id]: cast
-          };
-        })
-      )
-      setMovieCast(Object.assign({}, ...castData));
+      if (topRatedData && trendingData && nowPlayingData) {
+        const castData = await Promise.all(
+          [...topRatedData, ...trendingData, ...nowPlayingData, ...filteredMovies].map(async (movie: Movie) => {
+            const cast = await fetchMovieCast(movie.id);
+            return { [movie.id]: cast };
+          })
+        )
+        setMovieCast(Object.assign({}, ...castData));
+      }
     } catch (err) {
       console.log(err);
     }
-  }, [fetchData, fetchMovieCast, filteredMovies]); // 해당 코드에서 사용되는 함수와 지속 변화가 있는 변수를 의존성 배열에 넣어야 함
+  }, [fetchData, fetchMovieCast, filteredMovies, setNowPlayingMovies, setTopRatedMovies, setTrendingMovies]); 
 
   useEffect(() => {
     fetchMovies();
@@ -88,74 +89,81 @@ const MovieList:React.FC<props> = ({ searchQuery, filteredMovies }) => {
 
   return (
     <div>
-      {isNoResults ? 
-        (<>
-          <Category className='not-found'>"{searchQuery}" 검색 결과가 없습니다.</Category>
-        </>) :
-        (<>
-          {filteredMovies.length > 0 ? 
-            (<>
-              <Category>"{searchQuery}" 검색 결과</Category>
-              <Wrapper>
-                {filteredMovies.map(movie => {
-                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                  return (
-                    <MovieItem 
-                      key={movie.id} 
-                      movie={movie}
-                      backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id] || undefined}
-                    />
-                  )
-                })}
-              </Wrapper>
-            </>) : 
-            (<>
-              <Category>Top Rated</Category>
-              <Wrapper>
-                {topRated.map((movie: Movie) => {
-                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                  return (
-                    <MovieItem 
-                      key={movie.id} 
-                      movie={movie} 
-                      backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id] || undefined}
-                    />
-                  );
-                })}
-              </Wrapper>
-              <Category>Trending</Category>
-              <Wrapper>
-                {trending.map((movie) => {
-                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                  return (
-                    <MovieItem 
-                      key={movie.id} 
-                      movie={movie} 
-                      backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id] || undefined}
-                    />
-                  );
-                })}
-              </Wrapper>
-              <Category>Now Playing</Category>
-              <Wrapper>
-                {nowPlaying.map((movie) => {
-                  const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                  return (
-                    <MovieItem 
-                      key={movie.id} 
-                      movie={movie} 
-                      backdropUrl={backdropUrl}
-                      cast={movieCast[movie.id] || undefined}
-                    />
-                  );
-                })}
-              </Wrapper>
-            </>)
-          }
-        </>)
+      {loading 
+        ? (<h1>Loading...</h1>)
+        : (
+          <div>
+            {isNoResults ? 
+              (<>
+                <Category className='not-found'>"{searchQuery}" 검색 결과가 없습니다.</Category>
+              </>) :
+              (<>
+                {filteredMovies.length > 0 ? 
+                  (<>
+                    <Category>"{searchQuery}" 검색 결과</Category>
+                    <Wrapper>
+                      {filteredMovies.map(movie => {
+                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
+                        return (
+                          <MovieItem 
+                            key={movie.id}
+                            movie={movie}
+                            backdropUrl={backdropUrl}
+                            cast={movieCast[movie.id] || undefined}
+                          />
+                        )
+                      })}
+                    </Wrapper>
+                  </>) : 
+                  (<>
+                    <Category>Top Rated</Category>
+                    <Wrapper>
+                      {topRatedMovies?.map((movie: Movie) => {
+                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
+                        return (
+                          <MovieItem 
+                            key={movie.id} 
+                            movie={movie} 
+                            backdropUrl={backdropUrl}
+                            cast={movieCast[movie.id] || undefined}
+                          />
+                        );
+                      })}
+                    </Wrapper>
+                    <Category>Trending</Category>
+                    <Wrapper>
+                      {trendingMovies?.map((movie) => {
+                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
+                        return (
+                          <MovieItem 
+                            key={movie.id} 
+                            movie={movie} 
+                            backdropUrl={backdropUrl}
+                            cast={movieCast[movie.id] || undefined}
+                          />
+                        );
+                      })}
+                    </Wrapper>
+                    <Category>Now Playing</Category>
+                    <Wrapper>
+                      {nowPlayingMovies?.map((movie) => {
+                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
+                        return (
+                          <MovieItem 
+                            key={movie.id} 
+                            movie={movie} 
+                            backdropUrl={backdropUrl}
+                            cast={movieCast[movie.id] || undefined}
+                          />
+                        );
+                      })}
+                    </Wrapper>
+                  </>)
+                }
+              </>)
+            }
+          </div>
+        )
       }
     </div>
   )

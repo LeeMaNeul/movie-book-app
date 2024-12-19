@@ -11,22 +11,20 @@ interface props {
   };
 }
 
-const MovieItem:React.FC<props> = ({ 
-  movie,
-  backdropUrl, 
-  cast
-}) => {
+const MovieItem:React.FC<props> = ({ movie, backdropUrl, cast }) => {
   const [modal, setModal] = useState<boolean>(false);
   const handleClick = () => {
     setModal(prev => !prev);
   }
+
+
   return (
     <div>
       <Item>
         <Image 
           src={backdropUrl}
           alt={movie.title}
-          onClick={() => handleClick()}
+          onClick={handleClick}
         />
         <Info>
           <h3>{(movie.title.length > 20 ? movie.title.slice(0, 25) + "..." : movie.title)}</h3>

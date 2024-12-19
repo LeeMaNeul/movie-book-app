@@ -7,47 +7,49 @@ import { Movie, Person } from '../Movie';
 interface props {
   book?: Book | null;
   movie?: Movie | null;
-  setModal: (props: boolean)=>void;
-  modal: boolean;
   cast?: {
     cast?: Person[] | null;
     crew?: Person | null;
   }
+  modal: boolean;
+  setModal: (props: boolean) => void;
 }
 
-const Modal:React.FC<props> = ({ 
-  book, 
-  setModal,
-  modal, 
-  movie,
-  cast
-}) => {
-  const bookCover:string = book?.cover.replace("cover200", "cover500") || "";
-  const moviePoster:string = `https://image.tmdb.org/t/p/w1280/${movie?.poster_path}`;
+const Modal:React.FC<props> = ({ cast, modal, setModal, book, movie }) => {
+  const cover:string = book ? book.cover.replace("cover200", "cover500") || "" : `https://image.tmdb.org/t/p/w1280/${movie?.poster_path}`;
+  const title:string = book ? (book as Book).title : (movie as Movie).title;
   const date = new Date(movie?.release_date as string);
+  const character:string = book ? book.author : cast?.crew?.name as string;
+  const etc = 
+    book 
+      ? `ISBN: ${book.isbn}` 
+      : `개봉일: ${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+  const rating = book ? (book?.customerReviewRank as number / 2).toFixed(1) : (movie?.vote_average as number/ 2).toFixed(1)
+  const description:string = book ? book.description : movie?.overview as string;
+
   return (
     <Container className={modal ? 'show' : ''}>
       <Inner>
         <Image 
-          src={book ? bookCover : moviePoster}
-          alt={book?.title || movie?.title}
+          src={cover}
+          alt={title}
         />
         <Wrap>
-          <h2 style={{ fontSize: '1.5em', marginBottom: '30px', width: '90%'}}>{book?.title || movie?.title}</h2>
-          <Des style={{ fontSize: '1.2em', marginBottom: '30px'}}>{book ? "작가:" : "감독: "} {book?.author || cast?.crew?.name}</Des>
+          <h2 style={{ fontSize: '1.5em', marginBottom: '30px', width: '90%'}}>{title}</h2>
+          <Des style={{ fontSize: '1.2em', marginBottom: '30px'}}>{book ? "작가:" : "감독: "} {character}</Des>
           {(movie) && cast && <Des>출연진: {cast?.cast?.map(cast => cast.name).join(', ')}</Des>}
-          <Des>{book ? `ISBN: ${book.isbn}` : `개봉일: ${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`}</Des>
+          <Des>{etc}</Des>
           <Des className='rating'>
             <img 
               src={star}
               alt='star'
               style={{ width: 25, height: 25}}
             />
-            {book ? (book?.customerReviewRank as number / 2).toFixed(1) : (movie?.vote_average as number/ 2).toFixed(1)}
+            {rating}
           </Des>
           {book && <Des>카테고리: {book.categoryName}</Des>}
           <h3 style={{ fontSize: '1.3em', marginBottom: '20px'}}>{book ? "책 소개" : "영화 소개"}</h3>
-          <Des className='description'>{book?.description || movie?.overview}</Des>
+          <Des className='description'>{description}</Des>
           <Button>{book ? "구매하기" : "예매하기"}</Button>
         </Wrap>
         <Close onClick={() => setModal(false)}></Close>
