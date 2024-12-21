@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import './BookItem.css';
 import Modal from '../Modal';
 import { Book } from '../../Book';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 interface props {
   book: Book;
@@ -64,7 +65,7 @@ const Item = styled.div `
   }
 `
 
-const Image = styled.img `
+const Image = styled(LazyLoadImage) `
   width: 100%;
   height: 285px;
   object-fit: contain;

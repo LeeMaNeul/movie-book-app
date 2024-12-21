@@ -1,10 +1,13 @@
 import './App.css';
-import Header from './components/Header';
-import BookList from './components/book-components/BookList';
-import { useState } from 'react';
-import Footer from './components/Footer';
-import MovieList from './components/movie-components/MovieList';
+import { Suspense, useState } from 'react';
 import { useBookStore, useMovieStore } from './Store';
+import { Route, Routes } from 'react-router-dom';
+import React from 'react';
+
+const Header = React.lazy(() => import('./components/Header'));
+const BookList = React.lazy(() => import('./components/book-components/BookList'));
+const MovieList = React.lazy(() => import('./components/movie-components/MovieList'));
+const Footer = React.lazy(() => import('./components/Footer'));
 
 
 const App:React.FC = () => {
@@ -27,23 +30,26 @@ const App:React.FC = () => {
 
   return (
     <div className="App"> 
-      <Header 
-        selected={selected} 
-        handleClick={handleClick}
-        searchQuery={searchQuery} 
-        onSearch={handleSearchChange} 
-      />
-      <div className='inner' style={{ marginTop: 100 }}>
-        {selected === 'Books' ? 
-          (<BookList 
-            searchQuery={searchQuery}
-          />) :
-          (<MovieList
-            searchQuery={searchQuery}
-          />)
-        }
-      </div>
-      <Footer/>
+      <Suspense fallback={<div>Loading Header...</div>}>
+        <Header 
+          selected={selected} 
+          handleClick={handleClick}
+          searchQuery={searchQuery} 
+          onSearch={handleSearchChange} 
+        />
+      </Suspense>
+      <Suspense fallback={<div>Loading Contents...</div>}>
+        <div className='inner' style={{ marginTop: 100 }}>
+          <Routes>
+            <Route path="/" element={<BookList searchQuery={searchQuery}/>}/>
+            <Route path="/movies" element={<MovieList searchQuery={searchQuery}/>} />
+          </Routes>
+        </div>
+
+      </Suspense>
+      <Suspense fallback={<div>Loading Footer...</div>}>
+        <Footer/>
+      </Suspense>
     </div>
   );
 }

@@ -55,7 +55,7 @@ export const useBookStore = create(
         fetchBooks: async (queryType) => {
           set({ loading: true, error: null });
           const cachedData = JSON.parse(localStorage.getItem('Book-Store') as string).state;
-          if (cachedData?.bestSellers.length > 0) {
+          if (cachedData?.bestSellers?.length > 0) {
             let filteredData;
             switch (queryType) {
               case 'bestSellers':
@@ -145,7 +145,7 @@ export const useMovieStore = create(
         },
         fetchMovies: async (url) => {
           const cachedData = JSON.parse(localStorage.getItem('Movie-Store') as string).state;
-          if (cachedData?.topRatedMovies.length > 0) {
+          if (cachedData?.topRatedMovies?.length > 0) {
             let filteredData;
             switch (url) {
               case requests.fetchTopRated:

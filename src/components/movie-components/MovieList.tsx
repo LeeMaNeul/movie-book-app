@@ -81,7 +81,7 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
     } catch (err) {
       console.log(err);
     }
-  }, [fetchData, fetchMovieCast, filteredMovies, setNowPlayingMovies, setTopRatedMovies, setTrendingMovies]); 
+  }, [fetchData, fetchMovieCast, filteredMovies]); 
 
   useEffect(() => {
     fetchMovies();

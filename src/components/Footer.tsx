@@ -5,6 +5,7 @@ import email from '../images/email.png';
 import twitter from '../images/twitter.png';
 import facebook from '../images/facebook.png';
 import instagram from '../images/instagram.png';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
 const Footer:React.FC = () => {
@@ -18,15 +19,15 @@ const Footer:React.FC = () => {
         <Wrap>
           <Des>Follow Us</Des>
           <div className='icons'>
-            <img 
+            <LazyLoadImage 
               src={facebook}
               alt='facebook'
             />
-            <img 
+            <LazyLoadImage 
               src={twitter}
               alt='twitter'
             />
-            <img 
+            <LazyLoadImage 
               src={instagram}
               alt='instagram'
             />
@@ -35,7 +36,7 @@ const Footer:React.FC = () => {
         <Wrap>
           <Des>Contact</Des>
           <div className='email'>
-            <img 
+            <LazyLoadImage 
               src={email}
               alt='email'
               className='emailImage'

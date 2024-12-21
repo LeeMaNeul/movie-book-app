@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components';
 import Modal from '../Modal';
 import { Movie, Person } from '../../Movie';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 interface props {
   movie: Movie;
@@ -62,7 +63,7 @@ const Item = styled.div `
   }
 `
 
-const Image = styled.img `
+const Image = styled(LazyLoadImage) `
   width: 100%;
   height: min-content;
 `

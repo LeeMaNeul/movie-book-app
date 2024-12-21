@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Header.css';
 import { useBookStore, useMovieStore } from '../Store';
+import { Link } from 'react-router-dom';
 
 interface props {
   handleClick(li:string): void;
@@ -81,8 +82,8 @@ const Header:React.FC<props> = ({
       <div className='inner'>
         <a href='/' className='logo'>Book & Moov</a>
         <ul className='links'>
-          <li className={`link ${selected === 'Books' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('Books')}>Books</a></li>
-          <li className={`link ${selected === 'Movies' ? 'active' : ''}`}><a href="javascript:void(0)" onClick={() => handleClick('Movies')}>Movies</a></li>
+          <li className={`link ${selected === 'Books' ? 'active' : ''}`}><Link to="/" onClick={() => handleClick('Books')}>Books</Link></li>
+          <li className={`link ${selected === 'Movies' ? 'active' : ''}`}><Link to="/movies" onClick={() => handleClick('Movies')}>Movies</Link></li>
         </ul>
         <div className='search-wrapper'>
           <input 

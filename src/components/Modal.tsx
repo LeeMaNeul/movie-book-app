@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import star from '../images/star.png';
 import { Book } from '../Book';
 import { Movie, Person } from '../Movie';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 interface props {
   book?: Book | null;
@@ -40,7 +41,7 @@ const Modal:React.FC<props> = ({ cast, modal, setModal, book, movie }) => {
           {(movie) && cast && <Des>출연진: {cast?.cast?.map(cast => cast.name).join(', ')}</Des>}
           <Des>{etc}</Des>
           <Des className='rating'>
-            <img 
+            <LazyLoadImage 
               src={star}
               alt='star'
               style={{ width: 25, height: 25}}
@@ -121,7 +122,7 @@ const Des = styled.p `
     }
   }
 `
-const Image = styled.img `
+const Image = styled(LazyLoadImage) `
   width: 100%;
   object-fit: cover;
 `
