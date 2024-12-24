@@ -2,12 +2,12 @@ import './App.css';
 import { Suspense, useState } from 'react';
 import { useBookStore, useMovieStore } from './Store';
 import { Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
 import React from 'react';
+import Footer from './components/Footer';
 
-const Header = React.lazy(() => import('./components/Header'));
-const BookList = React.lazy(() => import('./components/book-components/BookList'));
-const MovieList = React.lazy(() => import('./components/movie-components/MovieList'));
-const Footer = React.lazy(() => import('./components/Footer'));
+const BookList = React.memo(React.lazy(() => import('./components/book-components/BookList')));
+const MovieList = React.memo(React.lazy(() => import('./components/movie-components/MovieList')));
 
 
 const App:React.FC = () => {
@@ -30,26 +30,21 @@ const App:React.FC = () => {
 
   return (
     <div className="App"> 
-      <Suspense fallback={<div>Loading Header...</div>}>
-        <Header 
-          selected={selected} 
-          handleClick={handleClick}
-          searchQuery={searchQuery} 
-          onSearch={handleSearchChange} 
-        />
-      </Suspense>
-      <Suspense fallback={<div>Loading Contents...</div>}>
-        <div className='inner' style={{ marginTop: 100 }}>
-          <Routes>
-            <Route path="/" element={<BookList searchQuery={searchQuery}/>}/>
-            <Route path="/movies" element={<MovieList searchQuery={searchQuery}/>} />
-          </Routes>
-        </div>
-
-      </Suspense>
-      <Suspense fallback={<div>Loading Footer...</div>}>
-        <Footer/>
-      </Suspense>
+    <Header 
+      selected={selected} 
+      handleClick={handleClick}
+      searchQuery={searchQuery} 
+      onSearch={handleSearchChange} 
+    />
+    <Suspense fallback={<div>Loading List..</div>}>
+      <div className='inner' style={{ marginTop: 100 }}>
+        <Routes>
+          <Route path="/" element={<BookList searchQuery={searchQuery}/>}/>
+          <Route path="/movies" element={<MovieList searchQuery={searchQuery}/>} />
+        </Routes>
+      </div>
+    </Suspense>
+    <Footer/>
     </div>
   );
 }

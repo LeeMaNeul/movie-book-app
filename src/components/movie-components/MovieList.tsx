@@ -1,16 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axiosMovieList';
 import styled from 'styled-components';
-import MovieItem from './MovieItem';
 import requests from '../../api/requests';
 import { Movie, Character } from '../../Movie';
 import { useMovieStore } from '../../Store';
 
 const IMAGE_BASE_URL: string = 'https://image.tmdb.org/t/p/w1280';
 
+console.log("MovieList is rendering");
+
 interface props {
   searchQuery: string | null;
 }
+
+const MovieItem = React.memo(React.lazy(() => import('./MovieItem')));
 
 type MovieCast = {
   cast: [{
@@ -83,6 +86,36 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
     }
   }, [fetchData, fetchMovieCast, filteredMovies]); 
 
+  const renderFilteredMovies = useCallback(() => {
+    return filteredMovies.map(movie => {
+      const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
+      return (
+        <Suspense key={movie.id} fallback={<div>Loading MovieItem...</div>}>
+          <MovieItem 
+            movie={movie}
+            backdropUrl={backdropUrl}
+            cast={movieCast[movie.id] || undefined}
+          />
+        </Suspense>
+      )
+    })
+  }, [filteredMovies, movieCast]);
+
+  const renderMovieCategory = useCallback((movies: Movie[] | undefined) => {
+    return movies?.map(movie => {
+      const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
+      return (
+        <Suspense key={movie.id}>
+          <MovieItem 
+            movie={movie}
+            backdropUrl={backdropUrl}
+            cast={movieCast[movie.id] || undefined}
+          />
+        </Suspense>
+      )
+    })
+  }, [movieCast]);
+
   useEffect(() => {
     fetchMovies();
   }, [fetchMovies]);
@@ -101,63 +134,15 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
                 {filteredMovies.length > 0 ? 
                   (<>
                     <Category>"{searchQuery}" 검색 결과</Category>
-                    <Wrapper>
-                      {filteredMovies.map(movie => {
-                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                        return (
-                          <MovieItem 
-                            key={movie.id}
-                            movie={movie}
-                            backdropUrl={backdropUrl}
-                            cast={movieCast[movie.id] || undefined}
-                          />
-                        )
-                      })}
-                    </Wrapper>
+                    <Wrapper>{renderFilteredMovies()}</Wrapper>
                   </>) : 
                   (<>
                     <Category>Top Rated</Category>
-                    <Wrapper>
-                      {topRatedMovies?.map((movie: Movie) => {
-                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                        return (
-                          <MovieItem 
-                            key={movie.id} 
-                            movie={movie} 
-                            backdropUrl={backdropUrl}
-                            cast={movieCast[movie.id] || undefined}
-                          />
-                        );
-                      })}
-                    </Wrapper>
+                    <Wrapper>{renderMovieCategory(topRatedMovies)}</Wrapper>
                     <Category>Trending</Category>
-                    <Wrapper>
-                      {trendingMovies?.map((movie) => {
-                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                        return (
-                          <MovieItem 
-                            key={movie.id} 
-                            movie={movie} 
-                            backdropUrl={backdropUrl}
-                            cast={movieCast[movie.id] || undefined}
-                          />
-                        );
-                      })}
-                    </Wrapper>
+                    <Wrapper>{renderMovieCategory(trendingMovies)}</Wrapper>
                     <Category>Now Playing</Category>
-                    <Wrapper>
-                      {nowPlayingMovies?.map((movie) => {
-                        const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
-                        return (
-                          <MovieItem 
-                            key={movie.id} 
-                            movie={movie} 
-                            backdropUrl={backdropUrl}
-                            cast={movieCast[movie.id] || undefined}
-                          />
-                        );
-                      })}
-                    </Wrapper>
+                    <Wrapper>{renderMovieCategory(nowPlayingMovies)}</Wrapper>
                   </>)
                 }
               </>)
@@ -171,9 +156,7 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
 
 export default MovieList;
 
-const Category = styled.h2 `
-
-`
+const Category = styled.h2 ``;
 
 const Wrapper = styled.div `
   display: grid;

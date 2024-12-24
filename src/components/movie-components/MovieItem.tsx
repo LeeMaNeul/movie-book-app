@@ -12,6 +12,8 @@ interface props {
   };
 }
 
+console.log('MovieItem is rendering');
+
 const MovieItem:React.FC<props> = ({ movie, backdropUrl, cast }) => {
   const [modal, setModal] = useState<boolean>(false);
   const handleClick = () => {

@@ -8,7 +8,8 @@ import instagram from '../images/instagram.png';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
-const Footer:React.FC = () => {
+const Footer:React.FC = React.memo(() => {
+  // console.log('Footer is rendering!');
   return (
     <footer>
       <div className='inner'>
@@ -47,7 +48,7 @@ const Footer:React.FC = () => {
       </div>
     </footer>
   )
-}
+})
 
 export default Footer
 

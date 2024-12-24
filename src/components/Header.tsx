@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import './Header.css';
 import { useBookStore, useMovieStore } from '../Store';
 import { Link } from 'react-router-dom';
@@ -10,17 +10,18 @@ interface props {
   onSearch(q: string): void;
 }
 
-const Header:React.FC<props> = ({ 
+const Header:React.FC<props> = React.memo(({ 
   handleClick, 
   selected,
   searchQuery,
   onSearch
 }) => {
+  console.log('Header is rendering!');
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
   const fetchSearchBooks = useBookStore(state => state.fetchSearchBooks);
   const fetchSearchMovies = useMovieStore(state => state.fetchSearchMovies);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
     const query:string = e.target.value;
     onSearch(query); // input 창에서 타이핑하면 onSearch 함수 실행되고, App.js에 있는 state에 저장됨 / 이 state를 BookList 컴포넌트에 전달해줌
     if (selected === 'Books') {
@@ -32,7 +33,7 @@ const Header:React.FC<props> = ({
   
       setDebounceTimeout(timeout);
     }
-  }
+  }, [fetchSearchBooks, onSearch])
 
   // const fetchSearchBooks = useCallback(async (Query: string): Promise<void> => {
   //   if (!Query) {
@@ -97,6 +98,6 @@ const Header:React.FC<props> = ({
       </div>
     </header>
   )
-}
+});
 
 export default Header
