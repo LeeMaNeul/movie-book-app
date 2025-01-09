@@ -10,7 +10,6 @@ interface props {
 }
 
 const BookItem:React.FC<props> = ({ book }) => {
-  // console.log('BookItem is rendering!');
   const [modal, setModal] = useState<boolean>(false);
   const handleClick = () => {
     setModal(prev => !prev);

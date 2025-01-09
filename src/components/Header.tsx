@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import './Header.css';
 import { useBookStore, useMovieStore } from '../Store';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 interface props {
   handleClick(li:string): void;
@@ -14,26 +15,24 @@ const Header:React.FC<props> = React.memo(({
   handleClick, 
   selected,
   searchQuery,
-  onSearch
+  onSearch // onsearch === handleSearchChange 함수
 }) => {
-  console.log('Header is rendering!');
-  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
   const fetchSearchBooks = useBookStore(state => state.fetchSearchBooks);
   const fetchSearchMovies = useMovieStore(state => state.fetchSearchMovies);
+
+  const debounceDelay = 200;
+  const debounceFetchSearchBooks = useMemo(() => _.debounce(fetchSearchBooks, debounceDelay), [fetchSearchBooks]);
+  const debounceFetchSearchMovies = useMemo(() => _.debounce(fetchSearchMovies, debounceDelay), [fetchSearchMovies]);
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
     const query:string = e.target.value;
     onSearch(query); // input 창에서 타이핑하면 onSearch 함수 실행되고, App.js에 있는 state에 저장됨 / 이 state를 BookList 컴포넌트에 전달해줌
     if (selected === 'Books') {
-      if (debounceTimeout) clearTimeout(debounceTimeout);
-  
-      const timeout = setTimeout(() => {
-        fetchSearchBooks(query);
-      }, 500);
-  
-      setDebounceTimeout(timeout);
+      debounceFetchSearchBooks(query);
+    } else {
+      debounceFetchSearchMovies(query);
     }
-  }, [fetchSearchBooks, onSearch])
+  }, [onSearch, selected, debounceFetchSearchBooks, debounceFetchSearchMovies])
 
   // const fetchSearchBooks = useCallback(async (Query: string): Promise<void> => {
   //   if (!Query) {
@@ -60,24 +59,14 @@ const Header:React.FC<props> = React.memo(({
   //   }
   // }, [setFilteredBooks]);
 
-  // const fetchSearchMovies = useCallback(async (query: string):Promise<void> => {
-  //   if (!query) {
-  //     setFilteredMovies([]);
-  //     return;
-  //   }
-  //   try {
-  //     const res = await axiosMovieList.get<MovieApiResponse>(`/search/movie?query=${query}`);
-  //     setFilteredMovies(res.data.results);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [setFilteredMovies]);
-
   useEffect(() => {
-    fetchSearchMovies(searchQuery);
-  }, [fetchSearchMovies, searchQuery, fetchSearchBooks]);
+    return () => {
+      debounceFetchSearchBooks.cancel();
+      debounceFetchSearchMovies.cancel();
+    }
+  }, [debounceFetchSearchBooks, debounceFetchSearchMovies]);
   
-  
+
   return (
     <header>
       <div className='inner'>

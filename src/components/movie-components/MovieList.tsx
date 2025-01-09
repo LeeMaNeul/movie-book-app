@@ -7,8 +7,6 @@ import { useMovieStore } from '../../Store';
 
 const IMAGE_BASE_URL: string = 'https://image.tmdb.org/t/p/w1280';
 
-console.log("MovieList is rendering");
-
 interface props {
   searchQuery: string | null;
 }
@@ -36,8 +34,7 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
   const {
     topRatedMovies, setTopRatedMovies,
     trendingMovies, setTrendingMovies,
-    nowPlayingMovies, setNowPlayingMovies,
-    loading
+    nowPlayingMovies, setNowPlayingMovies
   } = useMovieStore();
   const fetchData = useMovieStore(state => state.fetchMovies);
   const filteredMovies = useMovieStore(state => state.movies);
@@ -122,33 +119,26 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
 
   return (
     <div>
-      {loading 
-        ? (<h1>Loading...</h1>)
-        : (
-          <div>
-            {isNoResults ? 
-              (<>
-                <Category className='not-found'>"{searchQuery}" 검색 결과가 없습니다.</Category>
-              </>) :
-              (<>
-                {filteredMovies.length > 0 ? 
-                  (<>
-                    <Category>"{searchQuery}" 검색 결과</Category>
-                    <Wrapper>{renderFilteredMovies()}</Wrapper>
-                  </>) : 
-                  (<>
-                    <Category>Top Rated</Category>
-                    <Wrapper>{renderMovieCategory(topRatedMovies)}</Wrapper>
-                    <Category>Trending</Category>
-                    <Wrapper>{renderMovieCategory(trendingMovies)}</Wrapper>
-                    <Category>Now Playing</Category>
-                    <Wrapper>{renderMovieCategory(nowPlayingMovies)}</Wrapper>
-                  </>)
-                }
-              </>)
-            }
-          </div>
-        )
+      {isNoResults ? 
+        (<>
+          <Category className='not-found'>"{searchQuery}" 검색 결과가 없습니다.</Category>
+        </>) :
+        (<>
+          {filteredMovies.length > 0 ? 
+            (<>
+              <Category>"{searchQuery}" 검색 결과</Category>
+              <Wrapper>{renderFilteredMovies()}</Wrapper>
+            </>) : 
+            (<>
+              <Category>Top Rated</Category>
+              <Wrapper>{renderMovieCategory(topRatedMovies)}</Wrapper>
+              <Category>Trending</Category>
+              <Wrapper>{renderMovieCategory(trendingMovies)}</Wrapper>
+              <Category>Now Playing</Category>
+              <Wrapper>{renderMovieCategory(nowPlayingMovies)}</Wrapper>
+            </>)
+          }
+        </>)
       }
     </div>
   )

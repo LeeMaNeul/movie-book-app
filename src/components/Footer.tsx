@@ -9,7 +9,6 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
 const Footer:React.FC = React.memo(() => {
-  // console.log('Footer is rendering!');
   return (
     <footer>
       <div className='inner'>

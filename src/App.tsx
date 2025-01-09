@@ -1,11 +1,12 @@
 import './App.css';
-import { Suspense, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 import { useBookStore, useMovieStore } from './Store';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import React from 'react';
 import Footer from './components/Footer';
 
+// react.lazy로 컴포넌트 동적 로딩
 const BookList = React.memo(React.lazy(() => import('./components/book-components/BookList')));
 const MovieList = React.memo(React.lazy(() => import('./components/movie-components/MovieList')));
 
@@ -17,16 +18,17 @@ const App:React.FC = () => {
   const { setFilteredBooks } = useBookStore(); // 책 리스트 및 검색 시 출력되는 책 리스트
   const { setFilteredMovies } = useMovieStore(); // 영화 리스트 및 검색 시 출력되는 영화 리스트
 
-  const handleClick = (li:string):void => { 
+  // usecallback으로 함수 재생성 방지 (자식 컴포넌트에 props로 전달했기 때문에 최적화를 위해 사용함)
+  const handleClick = useCallback((li:string):void => { // li 클릭 시 일어나는 이벤트 제어
     setSelected(li);
     setSearchQuery('');
     setFilteredBooks([]);
     setFilteredMovies([]);
-  }
+  }, [setSelected ,setFilteredBooks, setFilteredMovies]);
 
-  const handleSearchChange = (q: string): void => { // input 값 옵저버 함수
+  const handleSearchChange = useCallback((q: string): void => { // input 값 옵저버 함수
     setSearchQuery(q);
-  }
+  }, [setSearchQuery]);
 
   return (
     <div className="App"> 
