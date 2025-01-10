@@ -3,6 +3,10 @@
     {
       "source": "/api/bookSearch",
       "destination": "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
+    },
+    {
+      "source": "/api/bookList",
+      "destination": "https://www.aladin.co.kr/ttb/api/ItemList.aspx"
     }
   ]
 }

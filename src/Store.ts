@@ -55,6 +55,7 @@ export const useBookStore = create(
         fetchBooks: async (queryType) => {
           set({ loading: true, error: null });
           const cachedData = JSON.parse(localStorage.getItem('Book-Store') as string).state;
+          console.log(cachedData);
           if (cachedData?.bestSellers?.length > 0) {
             let filteredData;
             switch (queryType) {
