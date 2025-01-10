@@ -54,29 +54,28 @@ export const useBookStore = create(
         },
         fetchBooks: async (queryType) => {
           set({ loading: true, error: null });
-          const cachedData = JSON.parse(localStorage.getItem('Book-Store') as string).state;
-          console.log(cachedData);
-          if (cachedData?.bestSellers?.length > 0) {
-            let filteredData;
-            switch (queryType) {
-              case 'bestSellers':
-                filteredData = cachedData.bestSellers;
-                break;
-              case 'newBooks':
-                filteredData = cachedData.newBooks;
-                break;
-              case 'specialBooks':
-                filteredData = cachedData.specialBooks;
-                break;
-              default:
-                filteredData = []; // 기본값으로 빈 배열
-            }
+          // const cachedData = JSON.parse(localStorage.getItem('Book-Store') as string).state;
+          // if (cachedData?.bestSellers?.length > 0) {
+          //   let filteredData;
+          //   switch (queryType) {
+          //     case 'bestSellers':
+          //       filteredData = cachedData.bestSellers;
+          //       break;
+          //     case 'newBooks':
+          //       filteredData = cachedData.newBooks;
+          //       break;
+          //     case 'specialBooks':
+          //       filteredData = cachedData.specialBooks;
+          //       break;
+          //     default:
+          //       filteredData = []; // 기본값으로 빈 배열
+          //   }
 
-            if (filteredData && filteredData.length > 0) {
-              set({ loading: false });
-              return filteredData; // queryType에 맞는 데이터 반환
-            }
-          }
+          //   if (filteredData && filteredData.length > 0) {
+          //     set({ loading: false });
+          //     return filteredData; // queryType에 맞는 데이터 반환
+          //   }
+          // }
 
           try {
             const res = await axiosList.get('', {
