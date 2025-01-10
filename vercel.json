@@ -1,0 +1,8 @@
+{
+  "rewrites":[
+    {
+      "source": "/api/bookSearch",
+      "destination": "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx"
+    }
+  ]
+}
