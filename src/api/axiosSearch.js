@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const bookSearchAPI = axios.create({
-  baseURL: 'http://www.aladin.co.kr/ttb/api/ItemSearch.aspx',
+  baseURL: 'https://www.aladin.co.kr/ttb/api/ItemSearch.aspx',
   params: {
     ttbkey: "ttbtigers02721314001",
     QueryType: "title",
