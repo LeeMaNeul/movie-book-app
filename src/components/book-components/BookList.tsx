@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useBookStore } from '../../Store';
 import _ from 'lodash';
+import { Book } from '../../Book';
 
 interface props {
   searchQuery: string | null;
@@ -39,6 +40,12 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
     }
   }, 2000), [fetchData, setBestSellers, setNewBooks, setSpecialBooks]);
 
+  const renderBookCategory = useCallback((books: Book[]) => {
+    return books?.map(book => {
+      return <BookItem key={book.itemId as number} book={book} />
+    })
+  }, []);
+
   useEffect(() => { // API 데이터를 가져온 뒤 불필요한 렌더링 방지를 위해 useEffect 사용
     return () => {
       fetchBooks.cancel();
@@ -64,21 +71,15 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
             (<>
               <Category>Best Sellers</Category>
               <Wrapper>
-                {bestSellers && bestSellers.map((book) => (
-                  <BookItem key={book.itemId as number} book={book} />
-                ))}
+                {bestSellers && renderBookCategory(bestSellers)}
               </Wrapper>
               <Category>New Special Books</Category>
               <Wrapper>
-                {specialBooks && specialBooks.map((book) => (
-                  <BookItem key={book.itemId as number} book={book} />
-                ))}
+                {specialBooks && renderBookCategory(specialBooks)}
               </Wrapper>
               <Category>New Books</Category>
               <Wrapper>
-                {newBooks && newBooks.map((book) => (
-                  <BookItem key={book.itemId as number} book={book} />
-                ))}
+                {newBooks && renderBookCategory(newBooks)}
               </Wrapper>
             </>)
           }

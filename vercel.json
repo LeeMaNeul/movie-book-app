@@ -6,7 +6,7 @@
     },
     {
       "source": "/api/bookList",
-      "destination": "https://www.aladin.co.kr/ttb/api/ItemList.aspx"
+      "destination": "http://www.aladin.co.kr/ttb/api/ItemList.aspx"
     }
   ]
 }

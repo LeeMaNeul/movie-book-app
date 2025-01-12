@@ -54,39 +54,19 @@ export const useBookStore = create(
         },
         fetchBooks: async (queryType) => {
           set({ loading: true, error: null });
-          // const cachedData = JSON.parse(localStorage.getItem('Book-Store') as string).state;
-          // if (cachedData?.bestSellers?.length > 0) {
-          //   let filteredData;
-          //   switch (queryType) {
-          //     case 'bestSellers':
-          //       filteredData = cachedData.bestSellers;
-          //       break;
-          //     case 'newBooks':
-          //       filteredData = cachedData.newBooks;
-          //       break;
-          //     case 'specialBooks':
-          //       filteredData = cachedData.specialBooks;
-          //       break;
-          //     default:
-          //       filteredData = []; // 기본값으로 빈 배열
-          //   }
 
-          //   if (filteredData && filteredData.length > 0) {
-          //     set({ loading: false });
-          //     return filteredData; // queryType에 맞는 데이터 반환
-          //   }
-          // }
 
           try {
             const res = await axiosList.get('', {
-              params: {
-                QueryType: queryType
-              }
+              params: { QueryType: queryType }
             });
             const data = res?.data?.item;
-            set({ loading: false });
-            return data;
+            if (data) {
+              set({ loading: false });
+              return data;
+            } else throw new Error('데이터가 없습니다.');
           } catch (err) {
+            console.error('데이터를 가져오는 데 실패했습니다:', err);
             set({ error: '데이터를 가져오는 데 실패했습니다.', loading: false });
           }
         },
