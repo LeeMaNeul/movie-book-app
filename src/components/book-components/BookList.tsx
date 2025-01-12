@@ -26,7 +26,6 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
 
   // 데이터 가져와서 state값 설정
   const fetchBooks = useMemo(() => _.debounce(async () => { // 적절한 요청을 보내기 위해 디바운스 설정
-    console.log('booklist hi');
     try {
       const [bestsellersData, newBooksData, specialBooksData] = await Promise.all([
         fetchData('Bestseller'),
@@ -39,7 +38,7 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
     } catch (err) {
       console.log("데이터 가져오기 오류 : ", err);
     }
-  }, 0), [fetchData, setBestSellers, setNewBooks, setSpecialBooks]);
+  }, 2000), [fetchData, setBestSellers, setNewBooks, setSpecialBooks]);
 
   const renderBookCategory = useCallback((books: Book[]) => {
     return books?.map(book => {
