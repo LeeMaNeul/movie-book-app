@@ -38,7 +38,7 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
     } catch (err) {
       console.log("데이터 가져오기 오류 : ", err);
     }
-  }, 2000), [fetchData, setBestSellers, setNewBooks, setSpecialBooks]);
+  }, 0), [fetchData, setBestSellers, setNewBooks, setSpecialBooks]);
 
   const renderBookCategory = useCallback((books: Book[]) => {
     return books?.map(book => {

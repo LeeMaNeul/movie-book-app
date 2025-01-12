@@ -53,6 +53,7 @@ export const useBookStore = create(
           }
         },
         fetchBooks: async (queryType) => {
+          console.log('hi');
           set({ loading: true, error: null });
 
 
