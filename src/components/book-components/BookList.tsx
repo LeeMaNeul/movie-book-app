@@ -26,6 +26,7 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
 
   // 데이터 가져와서 state값 설정
   const fetchBooks = useMemo(() => _.debounce(async () => { // 적절한 요청을 보내기 위해 디바운스 설정
+    console.log('booklist hi');
     try {
       const [bestsellersData, newBooksData, specialBooksData] = await Promise.all([
         fetchData('Bestseller'),
