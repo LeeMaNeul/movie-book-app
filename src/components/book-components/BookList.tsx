@@ -48,6 +48,7 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
   }, []);
 
   useEffect(() => { // API 데이터를 가져온 뒤 불필요한 렌더링 방지를 위해 useEffect 사용
+    fetchBooks();
     return () => {
       fetchBooks.cancel();
     } 
