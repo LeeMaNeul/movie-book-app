@@ -38,14 +38,12 @@ const App:React.FC = () => {
       searchQuery={searchQuery} 
       onSearch={handleSearchChange} 
     />
-    <Suspense fallback={<div>Loading List..</div>}>
-      <div className='inner' style={{ marginTop: 100 }}>
-        <Routes>
-          <Route path="/" element={<BookList searchQuery={searchQuery}/>}/>
-          <Route path="/movies" element={<MovieList searchQuery={searchQuery}/>} />
-        </Routes>
-      </div>
-    </Suspense>
+    <div className='inner' style={{ marginTop: 100 }}>
+      <Routes>
+        <Route path="/" element={<BookList searchQuery={searchQuery}/>}/>
+        <Route path="/movies" element={<MovieList searchQuery={searchQuery}/>} />
+      </Routes>
+    </div>
     <Footer/>
     </div>
   );
