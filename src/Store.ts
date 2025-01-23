@@ -145,7 +145,8 @@ export const useMovieStore = create(
           }
         },
         fetchMovies: async (url) => {
-          const cachedData = JSON.parse(localStorage.getItem('Movie-Store') as string).state;
+          set({ loading: true, error: null });
+          const cachedData = localStorage.length > 0 ? JSON.parse(localStorage.getItem('Movie-Store') as string).state : null;
           if (cachedData?.topRatedMovies?.length > 0) {
             let filteredData;
             switch (url) {
