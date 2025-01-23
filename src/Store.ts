@@ -84,7 +84,7 @@ export const useBookStore = create(
             console.log("res", res);
             const data = res?.data?.item;
             if (data) {
-              set({ loading: false });
+              // set({ loading: false });
               return data;
             } else throw new Error('데이터가 없습니다.');
           } catch (err) {
