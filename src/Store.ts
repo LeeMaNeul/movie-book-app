@@ -54,7 +54,7 @@ export const useBookStore = create(
         },
         fetchBooks: async (queryType) => {
           set({ loading: true, error: null });      
-          const cachedData = JSON.parse(localStorage.getItem('Book-Store') as string).state;
+          const cachedData = localStorage.length > 0 ? JSON.parse(localStorage.getItem('Book-Store') as string).state : null;
           if (cachedData?.bestSellers?.length > 0) {
             let filteredData;
             switch (queryType) {
@@ -78,9 +78,6 @@ export const useBookStore = create(
           }
 
           try {
-            console.log("queryType", queryType);
-            if (!queryType) throw new Error('queryType이 없습니다.');
-            console.log(axiosList);
             const res = await axiosList.get('', {
               params: { QueryType: queryType }
             });
