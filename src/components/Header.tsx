@@ -34,31 +34,6 @@ const Header:React.FC<props> = React.memo(({
     }
   }, [onSearch, selected, debounceFetchSearchBooks, debounceFetchSearchMovies])
 
-  // const fetchSearchBooks = useCallback(async (Query: string): Promise<void> => {
-  //   if (!Query) {
-  //     setFilteredBooks([]); // 검색 후 지울 경우 기본 책 리스트 출력
-  //     return; // 검색어 없으면 API 호출 X
-  //   }
-
-  //   const cachedData = localStorage.getItem(Query);
-  //   if (cachedData) {
-  //     setFilteredBooks(JSON.parse(cachedData)); // localStorage에 검색한 책이 저장되어 있으면 API 호출 없이 바로 사용
-  //     return;
-  //   }
-
-  //   try {
-  //     const res = await axiosSearch.get<BookApiResponse>('', {
-  //       params: {
-  //         Query
-  //       }
-  //     });
-  //     setFilteredBooks(res.data.item);
-  //     localStorage.setItem(Query, JSON.stringify(res.data.item));
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [setFilteredBooks]);
-
   useEffect(() => {
     return () => {
       debounceFetchSearchBooks.cancel();

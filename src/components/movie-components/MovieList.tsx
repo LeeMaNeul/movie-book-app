@@ -30,7 +30,7 @@ type MovieCastMap = {
 };
 
 const MovieList:React.FC<props> = ({ searchQuery }) => {
-  // // 각 리스트 저장 state
+  // 각 리스트 저장 state
   const {
     topRatedMovies, setTopRatedMovies,
     trendingMovies, setTrendingMovies,
