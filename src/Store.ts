@@ -78,9 +78,13 @@ export const useBookStore = create(
           }
 
           try {
-            const res = await axiosList.get('', {
+            console.log("queryType", queryType);
+            if (!queryType) throw new Error('queryType이 없습니다.');
+            console.log(axiosList);
+            const res = await axiosList.get('/', {
               params: { QueryType: queryType }
             });
+            console.log("res", res);
             const data = res?.data?.item;
             if (data) {
               set({ loading: false });
