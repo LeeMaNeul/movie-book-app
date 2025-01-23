@@ -81,7 +81,7 @@ export const useBookStore = create(
             console.log("queryType", queryType);
             if (!queryType) throw new Error('queryType이 없습니다.');
             console.log(axiosList);
-            const res = await axiosList.get('/', {
+            const res = await axiosList.get('', {
               params: { QueryType: queryType }
             });
             console.log("res", res);
