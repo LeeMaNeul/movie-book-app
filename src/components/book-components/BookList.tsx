@@ -3,14 +3,13 @@ import styled from 'styled-components'
 import { useBookStore } from '../../Store';
 import _ from 'lodash';
 import { Book } from '../../Book';
+import BookItem from './BookItem';
 
 interface props {
   searchQuery: string | null;
 }
-
-const BookItem = React.memo(React.lazy(() => import('./BookItem')));
  
-const BookList:React.FC<props> = ({ searchQuery }) => {
+const BookList:React.FC<props> = React.memo(({ searchQuery }) => {
   // 책 리스트 가져오기
   const { 
     bestSellers, setBestSellers,
@@ -88,7 +87,7 @@ const BookList:React.FC<props> = ({ searchQuery }) => {
       }
     </div>
   )
-}
+});
 
 export default BookList
 

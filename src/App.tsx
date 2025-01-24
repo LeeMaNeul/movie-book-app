@@ -1,14 +1,12 @@
 import './App.css';
-import { Suspense, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useBookStore, useMovieStore } from './Store';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import React from 'react';
 import Footer from './components/Footer';
-
-// react.lazy로 컴포넌트 동적 로딩
-const BookList = React.memo(React.lazy(() => import('./components/book-components/BookList')));
-const MovieList = React.memo(React.lazy(() => import('./components/movie-components/MovieList')));
+import BookList from './components/book-components/BookList';
+import MovieList from './components/movie-components/MovieList';
 
 
 const App:React.FC = () => {

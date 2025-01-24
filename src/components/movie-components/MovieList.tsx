@@ -1,17 +1,16 @@
-import React, { Suspense, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from '../../api/axiosMovieList';
 import styled from 'styled-components';
 import requests from '../../api/requests';
 import { Movie, Character } from '../../Movie';
 import { useMovieStore } from '../../Store';
+import MovieItem from './MovieItem';
 
 const IMAGE_BASE_URL: string = 'https://image.tmdb.org/t/p/w1280';
 
 interface props {
   searchQuery: string | null;
 }
-
-const MovieItem = React.memo(React.lazy(() => import('./MovieItem')));
 
 type MovieCast = {
   cast: [{
@@ -29,7 +28,7 @@ type MovieCastMap = {
   [key: string]: MovieCast | null;
 };
 
-const MovieList:React.FC<props> = ({ searchQuery }) => {
+const MovieList:React.FC<props> = React.memo(({ searchQuery }) => {
   // 각 리스트 저장 state
   const {
     topRatedMovies, setTopRatedMovies,
@@ -87,13 +86,12 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
     return filteredMovies.map(movie => {
       const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
       return (
-        <Suspense key={movie.id} fallback={<div>Loading MovieItem...</div>}>
-          <MovieItem 
-            movie={movie}
-            backdropUrl={backdropUrl}
-            cast={movieCast[movie.id] || undefined}
-          />
-        </Suspense>
+        <MovieItem 
+          key={movie.id}
+          movie={movie}
+          backdropUrl={backdropUrl}
+          cast={movieCast[movie.id] || undefined}
+        />
       )
     })
   }, [filteredMovies, movieCast]);
@@ -102,13 +100,12 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
     return movies?.map(movie => {
       const backdropUrl = `${IMAGE_BASE_URL}${movie.backdrop_path}`;
       return (
-        <Suspense key={movie.id}>
-          <MovieItem 
-            movie={movie}
-            backdropUrl={backdropUrl}
-            cast={movieCast[movie.id] || undefined}
-          />
-        </Suspense>
+        <MovieItem
+          key={movie.id} 
+          movie={movie}
+          backdropUrl={backdropUrl}
+          cast={movieCast[movie.id] || undefined}
+        />
       )
     })
   }, [movieCast]);
@@ -142,7 +139,7 @@ const MovieList:React.FC<props> = ({ searchQuery }) => {
       }
     </div>
   )
-}
+});
 
 export default MovieList;
 
